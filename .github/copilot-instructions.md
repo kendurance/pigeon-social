@@ -224,3 +224,233 @@ than timestamps. The mapper approximates an ISO date from this string.
 ---
 
 ## 8. Component Architecture
+```
+App
+├── LoginPage
+│
+└── [authenticated]
+├── AppHeader
+│   ├── Logo + wordmark
+│   ├── Mobile: hamburger → Drawer (Import, Folders, Settings, Sign out)
+│   └── Desktop: action row (Import, Folders, Hi username, Settings, Sign out)
+│
+├── MainPage
+│   ├── FilterPanel (sticky, collapsible)
+│   │   ├── Text search input
+│   │   ├── Source toggle buttons (Twitter / Instagram / YouTube + counts)
+│   │   └── Folder selector buttons
+│   │
+│   ├── Masonry Grid
+│   │   └── BookmarkCard (× N)
+│   │       ├── Thumbnail (conditional on settings.showPreviews)
+│   │       ├── Source badge (overlaid on thumbnail)
+│   │       ├── Folder tag
+│   │       ├── Context menu (Open, Move to folder, Delete)
+│   │       ├── SourceIcon
+│   │       ├── Title (2-line clamp + tooltip on hover)
+│   │       └── Author · relative date
+│   │
+│   ├── Infinite scroll sentinel (IntersectionObserver)
+│   ├── ImportModal
+│   └── FolderModal
+│
+└── SettingsPage
+├── Source visibility toggles
+├── Show previews toggle
+└── Theme radio (Light / Dark / System)
+```
+
+---
+
+## 9. Roadmap
+
+### Phase 1 — Foundation ✅ Complete
+
+- [x] Project scaffolding (Vite + React 19 + TypeScript)
+- [x] Dexie IndexedDB schema (bookmarks + folders)
+- [x] Unified `Bookmark` type and mapper layer (Twitter, Instagram, YouTube)
+- [x] Auto-detection of source from uploaded JSON
+- [x] Local auth (login, create account, 21-day session)
+- [x] Masonry grid with infinite scroll
+- [x] Folder CRUD (create, color, delete, unassign)
+- [x] Filter panel (search, source, folder)
+- [x] Settings page (source toggles, preview toggle, theme selector)
+- [x] Responsive layout (mobile-first, desktop two-row header)
+
+---
+
+### Phase 2a — Backup & Restore (Priority)
+
+The export format uses the `PigeonExport` schema defined in section 6. It is
+distinct from raw social media export files and is the only file format
+PigeonSocial itself produces.
+
+- [ ] **Export selected folders** — user selects one or more folders from a
+  modal; downloads a `pigeon-export-{date}.json` file containing the selected
+  `Folder` records and all `Bookmark` records whose `folderId` matches
+- [ ] **Export all** — convenience option to export every folder and every
+  bookmark (including uncategorized) in one file
+- [ ] **Restore from export** — the ImportModal's auto-detection logic learns
+  to recognize the `PigeonExport` schema (keyed on `version` + `exportedAt`
+  fields) and re-imports folders and bookmarks, restoring `folderId`
+  relationships; duplicate URLs are skipped by default with a count reported
+  to the user
+- [ ] **Conflict handling** — if a folder with the same name already exists
+  during restore, prompt the user to merge into the existing folder or create
+  a new one with a disambiguated name
+
+---
+
+### Phase 2b — Import Improvements
+
+- [ ] **Multi-file import** — allow selecting multiple JSON files in one
+  session rather than repeating the import flow
+- [ ] **Duplicate detection** — skip bookmarks whose source URL already exists
+  in the database; report the skipped count to the user after import
+- [ ] **Instagram pagination** — accept additional page captures and merge
+  them into the existing Instagram bookmark set
+- [ ] **Import history** — log of previous import sessions showing source,
+  item count, and timestamp
+
+---
+
+### Phase 2c — Bookmark Enhancements
+
+- [ ] **Tags UI** — chip input on each card to add/remove tags; the `tags`
+  field already exists in the data model and DB schema
+- [ ] **Tag filter** — add tag filtering to the filter panel alongside source
+  and folder filters
+- [ ] **Bulk selection** — checkbox mode; bulk move to folder, bulk delete,
+  bulk export
+- [ ] **Sort options** — by date added (desc/asc), by source, by title (A–Z)
+
+---
+
+### Phase 2d — Folder Improvements
+
+- [ ] **Folder rename** — inline edit in FolderModal
+- [ ] **Folder reorder** — drag handles in FolderModal to set display order
+- [ ] **Bookmark count badge** — show item count per folder in the filter panel
+  and FolderModal
+
+---
+
+### Phase 2e — UI Polish
+
+- [ ] **Replace emoji favicon** with the Flaticon pigeon PNG
+  (https://www.flaticon.com/free-icon/pigeon_3338238); add attribution to
+  README per Flaticon free license terms
+- [ ] **Dark mode** — wire `settings.theme` into AntD's `ConfigProvider`
+  `algorithm` prop (`theme.darkAlgorithm`)
+- [ ] **Card skeleton loaders** — placeholder shimmer cards during initial
+  DB hydration on page load
+- [ ] **Toast notifications** — success/error feedback on import, export,
+  delete, and folder operations
+- [ ] **Drag-and-drop to folders** — drag a card onto a folder chip in the
+  filter panel to move it; consider `@dnd-kit/core`
+
+---
+
+### Phase 3 — Extended Sources
+
+Each new source requires:
+1. A new mapper file at `src/mappers/{source}Mapper.ts`
+2. A detection heuristic and dispatch case in `src/mappers/index.ts`
+3. A new value added to the `BookmarkSource` union in `src/types/index.ts`
+4. A new `SourceIcon` variant in `src/components/SourceIcon.tsx`
+5. A new settings toggle in `SettingsPage` and `AppSettings`
+
+No other files need to change.
+
+**Planned sources:**
+
+- [ ] **Reddit** — saved posts via Reddit Data Request (GDPR export) or the
+  Reddit API (`/user/{username}/saved`); evaluate JSON structure at
+  implementation time
+- [ ] **TikTok** — liked/saved videos via TikTok Data Export (Settings →
+  Privacy → Download your data); JSON format contains a `Activity` →
+  `Like List` section
+- [ ] **Generic URL** — manually paste any URL; fetch OpenGraph metadata
+  (title, description, thumbnail) to populate the bookmark; likely requires
+  a lightweight backend proxy to avoid CORS restrictions, making this a
+  natural bridge to Phase 4
+
+---
+
+### Phase 4 — Browser Extension Companion
+
+A lightweight Manifest V3 Chrome extension that adds a **"Save to
+PigeonSocial"** button directly on Twitter, Instagram, and YouTube pages.
+
+Architecture requires a local backend (Express or similar) running alongside
+the web app. The extension POSTs content metadata to `localhost:{port}/api
+/bookmark`; the backend writes to the database; the web app reads from it.
+
+This phase represents the architecture inflection point from a pure SPA to a
+local full-stack app, at which point:
+- IndexedDB is replaced by SQLite (via Prisma or better-sqlite3)
+- The auth system is upgraded (bcrypt password hashing)
+- The Generic URL source from Phase 3 becomes straightforward
+
+---
+
+### Phase 5 — Multi-Device Sync (Long-Term)
+
+Optional cloud sync once a backend exists from Phase 4:
+- Replace localStorage auth with JWT + bcrypt
+- Migrate SQLite to PostgreSQL via Prisma
+- Deploy to a private server or VPS (not public-facing without full auth
+  hardening)
+- Sync bookmarks and folders across devices for the same user account
+
+---
+
+## 10. Known Limitations & Technical Debt
+
+| Item | Notes |
+|---|---|
+| Auth security | Passwords are base64-encoded, not hashed. Acceptable for local-only use; must be replaced before any networked deployment |
+| Instagram export is manual | No official API; DevTools capture is a workaround. One page at a time (~21 items) |
+| YouTube `age` field is approximate | "8 months ago" is converted to an estimated timestamp; exact publish dates are not available from the playlist export format |
+| No duplicate prevention | Importing the same file twice creates duplicate records. Deduplication by source URL is a Phase 2b item |
+| Instagram CDN URLs expire | Instagram image URLs contain signed tokens that expire; thumbnails on older bookmarks may break |
+| Tags stored but not surfaced | The `tags` field exists in the data model and DB schema; the UI is deferred to Phase 2c |
+| Dark mode toggle is wired but incomplete | The settings value persists correctly; the AntD `darkAlgorithm` swap is not yet applied |
+| No export / backup | Organized data exists only in the browser's IndexedDB; a browser data clear destroys it. Addressed in Phase 2a |
+
+---
+
+## 11. Conventions
+
+- **Components:** PascalCase, one component per file (`BookmarkCard.tsx`)
+- **Hooks:** camelCase prefixed with `use` (`useAuth.ts`)
+- **Mappers:** camelCase suffixed with `Mapper` (`twitterMapper.ts`)
+- **Pages:** PascalCase suffixed with `Page` (`MainPage.tsx`)
+- **Store:** camelCase prefixed with `use`, suffixed with `Store`
+  (`useAppStore.ts`)
+- **Types:** all in `src/types/index.ts`, interfaces in PascalCase
+- **CSS classes:** kebab-case prefixed with `pigeon-` for app-specific
+  overrides (`pigeon-masonry-grid`, `pigeon-bookmark-card`)
+- **Comments:** every file has a header comment block explaining its role;
+  every non-obvious function has a JSDoc comment; inline comments explain
+  *why*, not *what*
+
+---
+
+## 12. Local Development
+
+```bash
+npm run dev          # Vite dev server at localhost:5173 with HMR
+npm run build        # TypeScript compile + Vite production bundle → dist/
+npm run preview      # Serve dist/ locally to test the production build
+npm run type-check   # tsc --noEmit — surface type errors without emitting files
+```
+
+**First run:** Navigate to `localhost:5173`, click **Create Account**. No
+environment variables or configuration files are required.
+
+**Resetting all data:**
+- Bookmarks + folders: DevTools → Application → IndexedDB → delete
+  `PigeonSocialDB`
+- Auth + settings: DevTools → Application → Local Storage → delete all keys
+  prefixed with `pigeon_`
