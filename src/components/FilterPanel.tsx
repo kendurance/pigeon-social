@@ -11,7 +11,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useCallback } from 'react';
-import { Input, Button, Space, Collapse, Badge } from 'antd';
+import { Input, Button, Space, Badge } from 'antd';
 import { FilterOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import type { Folder } from '@/types';
 import type { BookmarkSource, FilterState } from '@/types';

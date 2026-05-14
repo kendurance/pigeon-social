@@ -15,7 +15,6 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import Masonry from 'react-masonry-css';
 import { Spin, Empty, FloatButton } from 'antd';
-import { ImportOutlined, FolderAddOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
 import db from '@/db/database';
 import { useAppStore, selectIsFiltered } from '@/store/useAppStore';
 import { AppHeader } from '@/components/AppHeader';
@@ -23,6 +22,7 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { BookmarkCard } from '@/components/BookmarkCard';
 import { ImportModal } from '@/components/ImportModal';
 import { FolderModal } from '@/components/FolderModal';
+import { ExportModal } from '@/components/ExportModal';
 import type { Bookmark, BookmarkSource, Session } from '@/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -51,6 +51,7 @@ interface MainPageProps {
 export function MainPage({ session, onLogout }: MainPageProps) {
   // ── Modal visibility state ─────────────────────────────────────────────────
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const [folderModalOpen, setFolderModalOpen] = useState(false);
 
   // ── Infinite scroll: how many items are currently rendered ─────────────────
@@ -191,6 +192,7 @@ export function MainPage({ session, onLogout }: MainPageProps) {
         session={session}
         onLogout={onLogout}
         onImportClick={() => setImportModalOpen(true)}
+        onExportClick={() => setExportModalOpen(true)}
         onManageFolders={() => setFolderModalOpen(true)}
       />
 
@@ -302,6 +304,12 @@ export function MainPage({ session, onLogout }: MainPageProps) {
         open={importModalOpen}
         onClose={() => setImportModalOpen(false)}
         onImported={() => setImportModalOpen(false)}
+      />
+
+      <ExportModal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        folders={allFolders ?? []}
       />
 
       <FolderModal

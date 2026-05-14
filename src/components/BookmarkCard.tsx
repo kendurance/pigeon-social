@@ -25,13 +25,6 @@ import { SourceIcon } from './SourceIcon';
 
 dayjs.extend(relativeTime);
 
-// ── Source display labels ─────────────────────────────────────────────────────
-
-const SOURCE_LABELS: Record<Bookmark['source'], string> = {
-  twitter:   'Twitter / X',
-  instagram: 'Instagram',
-  youtube:   'YouTube',
-};
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 

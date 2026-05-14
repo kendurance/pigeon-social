@@ -6,7 +6,7 @@
 // then delegates to the correct mapper.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { Bookmark } from '@/types';
+import type { Bookmark, Folder, PigeonExport } from '@/types';
 import { mapTwitterExport }   from './twitterMapper';
 import { mapInstagramExport } from './instagramMapper';
 import { mapYoutubeExport }   from './youtubeMapper';
@@ -19,7 +19,9 @@ export { mapTwitterExport, mapInstagramExport, mapYoutubeExport };
  */
 export interface DetectAndMapResult {
   bookmarks:            Bookmark[];
-  detectedSource:       'twitter' | 'instagram' | 'youtube' | 'unknown';
+  /** Folders extracted from a PigeonExport backup; empty for all other sources. */
+  folders:              Folder[];
+  detectedSource:       'twitter' | 'instagram' | 'youtube' | 'pigeon-export' | 'unknown';
   suggestedFolderName:  string | null;
   /** Human-readable message for the ImportModal success/error notice. */
   message:              string;
@@ -28,12 +30,35 @@ export interface DetectAndMapResult {
 /**
  * Detects the source of a parsed JSON file and maps it to Bookmarks.
  *
- * Detection heuristics:
- *  - Twitter  → top-level array where first item has a "Tweet Id" key
- *  - Instagram → object with `data.xdt_api__v1__feed__saved__posts_connection`
- *  - YouTube  → object with `playlist` + `items` keys
+ * Detection heuristics (checked in this order):
+ *  - PigeonExport → object with `version` (number) + `exportedAt` + `bookmarks` + `folders`
+ *  - Twitter      → top-level array where first item has a "Tweet Id" key
+ *  - Instagram    → object with `data.xdt_api__v1__feed__saved__posts_connection`
+ *  - YouTube      → object with `playlist` + `items` keys
  */
 export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
+  // ── PigeonExport detection (checked first to avoid false positives) ─────────
+  if (
+    typeof parsedJson === 'object' &&
+    parsedJson !== null &&
+    'version' in parsedJson &&
+    'exportedAt' in parsedJson &&
+    'bookmarks' in parsedJson &&
+    'folders' in parsedJson &&
+    typeof (parsedJson as Record<string, unknown>).version === 'number' &&
+    Array.isArray((parsedJson as Record<string, unknown>).bookmarks) &&
+    Array.isArray((parsedJson as Record<string, unknown>).folders)
+  ) {
+    const pigeonExport = parsedJson as PigeonExport;
+    return {
+      bookmarks:            pigeonExport.bookmarks,
+      folders:              pigeonExport.folders,
+      detectedSource:       'pigeon-export',
+      suggestedFolderName:  null,
+      message: `PigeonSocial backup: ${pigeonExport.bookmarks.length} bookmark${pigeonExport.bookmarks.length !== 1 ? 's' : ''} across ${pigeonExport.folders.length} folder${pigeonExport.folders.length !== 1 ? 's' : ''}.`,
+    };
+  }
+
   // ── Twitter detection ──────────────────────────────────────────────────────
   if (
     Array.isArray(parsedJson) &&
@@ -45,6 +70,7 @@ export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
     const bookmarks = mapTwitterExport(parsedJson);
     return {
       bookmarks,
+      folders:             [],
       detectedSource:      'twitter',
       suggestedFolderName: null,
       message:             `Imported ${bookmarks.length} Twitter bookmarks.`,
@@ -64,6 +90,7 @@ export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
     const bookmarks = mapInstagramExport(parsedJson);
     return {
       bookmarks,
+      folders:             [],
       detectedSource:      'instagram',
       suggestedFolderName: null,
       message:             `Imported ${bookmarks.length} Instagram saved posts.`,
@@ -80,6 +107,7 @@ export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
     const { bookmarks, suggestedFolderName } = mapYoutubeExport(parsedJson);
     return {
       bookmarks,
+      folders:             [],
       detectedSource:      'youtube',
       suggestedFolderName,
       message: suggestedFolderName
@@ -91,8 +119,9 @@ export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
   // ── Unknown format ─────────────────────────────────────────────────────────
   return {
     bookmarks:            [],
+    folders:              [],
     detectedSource:       'unknown',
     suggestedFolderName:  null,
-    message:              'Could not detect the source. Make sure the file is a valid Twitter, Instagram, or YouTube export.',
+    message:              'Could not detect the source. Make sure the file is a valid Twitter, Instagram, YouTube, or PigeonSocial export.',
   };
 }

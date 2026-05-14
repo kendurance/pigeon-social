@@ -207,6 +207,24 @@ export interface RawYoutubeItem {
   age: string;          // "8 months ago"
 }
 
+// ── PigeonSocial backup / restore format ─────────────────────────────────────
+
+/**
+ * The schema for backup files produced by PigeonSocial itself.
+ * Distinct from raw social-media export files — this is the only format
+ * PigeonSocial writes. Keyed on `version` + `exportedAt` for auto-detection.
+ */
+export interface PigeonExport {
+  /** Schema version (currently 1) for forward-compatibility. */
+  version: number;
+  /** ISO 8601 timestamp of when this file was created. */
+  exportedAt: string;
+  /** Folder records included in this backup. */
+  folders: Folder[];
+  /** Bookmark records included in this backup. */
+  bookmarks: Bookmark[];
+}
+
 // ── Filter state ──────────────────────────────────────────────────────────────
 
 /**
