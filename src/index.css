@@ -1,0 +1,112 @@
+/* src/index.css */
+/* ────────────────────────────────────────────────────────────────────────────
+   Global styles for PigeonSocial.
+   Ant Design handles most component styling via its CSS-in-JS system.
+   This file covers:
+     • CSS reset/base
+     • Masonry grid layout (react-masonry-css class hooks)
+     • Responsive header: show/hide mobile vs desktop rows
+     • Custom scrollbar
+──────────────────────────────────────────────────────────────────────────── */
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1a1a2e;
+  background-color: #EEF3FA;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Custom scrollbar (subtle) ───────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c0c8d8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #8896a8; }
+
+/* ── Masonry grid ─────────────────────────────────────────────────────────── */
+/* react-masonry-css generates a wrapper div + one div per column.           */
+/* We control the gap between columns here.                                  */
+
+.pigeon-masonry-grid {
+  display: flex;
+  width: 100%;
+  gap: 12px;          /* horizontal gap between columns */
+}
+
+.pigeon-masonry-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;          /* vertical gap between cards in a column */
+}
+
+/* Remove any bottom margin AntD adds to cards inside masonry */
+.pigeon-masonry-column .ant-card {
+  margin-bottom: 0 !important;
+}
+
+/* ── Responsive header visibility ─────────────────────────────────────────── */
+/* Mobile:  show the single-row layout, hide the desktop two-row layout.      */
+/* Desktop: show the two-row layout, hide the hamburger & mobile username.    */
+
+/* "Mobile only" elements (hamburger button + mobile Hi username) */
+.header-hamburger {
+  display: flex;
+}
+
+/* "Desktop only" elements (the second actions row in the header) */
+.header-desktop-actions {
+  display: none;
+}
+
+/* On screens wider than 768px, flip the visibility */
+@media (min-width: 769px) {
+  .header-hamburger {
+    display: none;
+  }
+
+  /* Hide the mobile "Hi username" span — desktop row has its own */
+  .header-mobile > span:last-of-type {
+    display: none;
+  }
+
+  .header-desktop-actions {
+    display: flex;
+  }
+}
+
+/* ── Bookmark card hover effect ───────────────────────────────────────────── */
+
+.pigeon-bookmark-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pigeon-bookmark-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.14) !important;
+}
+
+/* ── Filter panel ─────────────────────────────────────────────────────────── */
+
+.pigeon-filter-panel {
+  transition: box-shadow 0.2s ease;
+}
+
+.pigeon-filter-panel:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+}
