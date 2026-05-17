@@ -50,10 +50,26 @@ export function BookmarkCard({
   /** Controls whether the thumbnail failed to load (shows fallback instead). */
   const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
 
+  // Reject obviously-broken URLs up front: empty strings and data: URIs (which
+  // can sneak in as lazy-load placeholders) succeed in <img> without firing
+  // onError, leaving a broken-icon glyph in the layout.
+  const hasUsableThumbnailUrl =
+    bookmark.thumbnailUrl !== null &&
+    bookmark.thumbnailUrl.trim() !== '' &&
+    !bookmark.thumbnailUrl.startsWith('data:');
+
   const shouldShowThumbnail =
     showPreview &&
-    bookmark.thumbnailUrl !== null &&
+    hasUsableThumbnailUrl &&
     !thumbnailLoadFailed;
+
+  // True when a thumbnail URL exists but the image failed to load (e.g. expired
+  // Instagram CDN token, blocked Twitter video URL). Shows a grey placeholder
+  // instead of silently collapsing the card to text-only.
+  const shouldShowPlaceholder =
+    showPreview &&
+    hasUsableThumbnailUrl &&
+    thumbnailLoadFailed;
 
   // Build the folder submenu items for the "Move to folder" option
   const folderMenuItems: MenuProps['items'] = [
@@ -177,6 +193,32 @@ export function BookmarkCard({
         </div>
       )}
 
+      {/* ── Placeholder (thumbnail URL existed but failed to load) ──────────── */}
+      {shouldShowPlaceholder && (
+        <div
+          style={{
+            position:        'relative',
+            width:           '100%',
+            paddingTop:      '56.25%',
+            backgroundColor: '#f5f5f5',
+            overflow:        'hidden',
+          }}
+        >
+          <div
+            style={{
+              position:       'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              opacity:        0.15,
+            }}
+          >
+            <SourceIcon source={bookmark.source} size={48} />
+          </div>
+        </div>
+      )}
+
       {/* ── Card body / footer ──────────────────────────────────────────────── */}
       <div style={{ padding: '10px 12px' }}>
 
@@ -202,8 +244,7 @@ export function BookmarkCard({
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
           {/* Source icon — flush left, vertically centred with title+date */}
           <div style={{ flexShrink: 0, marginTop: 2 }}>
-            {!shouldShowThumbnail && <SourceIcon source={bookmark.source} size={18} />}
-            {shouldShowThumbnail  && <SourceIcon source={bookmark.source} size={18} />}
+            <SourceIcon source={bookmark.source} size={18} />
           </div>
 
           {/* Title and date */}

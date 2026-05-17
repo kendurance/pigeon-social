@@ -180,6 +180,15 @@ export interface RawInstagramMedia {
   image_versions2?: {
     candidates: { url: string; width: number; height: number }[];
   };
+  /**
+   * Present on carousel posts (media_type=8). Each slide has its own
+   * image_versions2; the top-level image_versions2 is often absent for these.
+   */
+  carousel_media?: {
+    image_versions2?: {
+      candidates: { url: string; width: number; height: number }[];
+    };
+  }[];
   user?: {
     username: string;
     pk: string;

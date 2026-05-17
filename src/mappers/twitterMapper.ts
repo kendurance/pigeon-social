@@ -22,16 +22,57 @@ function parseTweetDate(rawDateString: string): string {
   return isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString();
 }
 
-/**
- * Picks the best available thumbnail URL from a tweet's Media URLs field.
- * The field is a comma-separated list, so we take the first entry.
- * Returns null if there are no media URLs.
- */
-function extractThumbnailUrl(mediaUrlsString: string): string | null {
-  if (!mediaUrlsString || mediaUrlsString.trim() === '') return null;
+/** True if the URL looks like an image an <img> tag can render. */
+function isImageUrl(url: string): boolean {
+  return /\.(jpg|jpeg|png|webp|gif)(\?|#|$)/i.test(url);
+}
 
-  const firstMediaUrl = mediaUrlsString.split(',')[0].trim();
-  return firstMediaUrl || null;
+/** Picks the first image-looking URL from a comma-separated list. */
+function findImageInCsv(csv: string): string | null {
+  if (!csv) return null;
+  return csv
+    .split(',')
+    .map((u) => u.trim())
+    .filter(Boolean)
+    .find(isImageUrl) ?? null;
+}
+
+/**
+ * Scans any string field whose name hints at a thumbnail/preview/poster/card
+ * image (e.g. "Card Image Url", "Preview Image Url"). The Twitter Bookmarks
+ * Downloader extension may include these fields for video tweets even though
+ * they're not in the documented `RawTwitterBookmark` shape.
+ */
+function findImageInPreviewFields(rawTweet: RawTwitterBookmark): string | null {
+  for (const [key, value] of Object.entries(rawTweet)) {
+    if (typeof value !== 'string') continue;
+    const lowerKey = key.toLowerCase();
+    const looksLikePreviewField =
+      lowerKey.includes('thumb') ||
+      lowerKey.includes('preview') ||
+      lowerKey.includes('poster') ||
+      lowerKey.includes('card');
+    if (!looksLikePreviewField) continue;
+    const image = findImageInCsv(value) ?? (isImageUrl(value) ? value : null);
+    if (image) return image;
+  }
+  return null;
+}
+
+/**
+ * Picks the best available thumbnail URL for a tweet.
+ * Order of preference:
+ *   1. First image-looking URL in `Media URLs` (skips .mp4 video files that
+ *      <img> can't render — those land in this field for video tweets).
+ *   2. Any preview/poster/card-image field the export may include.
+ *   3. null — text-only tweet (or video tweet with no still available),
+ *      so the card falls through to its source-icon placeholder.
+ */
+function extractThumbnailUrl(rawTweet: RawTwitterBookmark): string | null {
+  return (
+    findImageInCsv(rawTweet['Media URLs'] ?? '') ??
+    findImageInPreviewFields(rawTweet)
+  );
 }
 
 /**
@@ -43,7 +84,7 @@ function mapSingleTwitterBookmark(rawTweet: RawTwitterBookmark): Bookmark {
     source:          'twitter',
     title:           rawTweet['Full Text']         ?? '(no text)',
     url:             rawTweet['Tweet Url']          ?? '',
-    thumbnailUrl:    extractThumbnailUrl(rawTweet['Media URLs'] ?? ''),
+    thumbnailUrl:    extractThumbnailUrl(rawTweet),
     authorName:      `@${rawTweet['User Screen Name'] ?? rawTweet['User Name'] ?? 'unknown'}`,
     authorAvatarUrl: rawTweet['User Avatar Url']   ?? null,
     dateAdded:       parseTweetDate(rawTweet['Created At'] ?? ''),
