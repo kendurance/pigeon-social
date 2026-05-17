@@ -17,10 +17,10 @@
 import { useState } from 'react';
 import { Card, Tooltip, Dropdown, Tag } from 'antd';
 import type { MenuProps } from 'antd';
-import { EllipsisOutlined, FolderAddOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, FolderAddOutlined, DeleteOutlined, LinkOutlined, PlayCircleFilled } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import type { Bookmark, Folder } from '@/types';
+import type { Bookmark, BookmarkMediaType, Folder } from '@/types';
 import { SourceIcon } from './SourceIcon';
 
 dayjs.extend(relativeTime);
@@ -50,6 +50,11 @@ export function BookmarkCard({
   /** Controls whether the thumbnail failed to load (shows fallback instead). */
   const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
 
+  // Default for legacy bookmarks imported before mediaType existed.
+  const effectiveMediaType: BookmarkMediaType = bookmark.mediaType ?? 'image';
+  const isTextOnly = effectiveMediaType === 'text';
+  const isVideo    = effectiveMediaType === 'video';
+
   // Reject obviously-broken URLs up front: empty strings and data: URIs (which
   // can sneak in as lazy-load placeholders) succeed in <img> without firing
   // onError, leaving a broken-icon glyph in the layout.
@@ -60,16 +65,19 @@ export function BookmarkCard({
 
   const shouldShowThumbnail =
     showPreview &&
+    !isTextOnly &&
     hasUsableThumbnailUrl &&
     !thumbnailLoadFailed;
 
-  // True when a thumbnail URL exists but the image failed to load (e.g. expired
-  // Instagram CDN token, blocked Twitter video URL). Shows a grey placeholder
-  // instead of silently collapsing the card to text-only.
+  // Show the grey source-icon placeholder when:
+  //  - mediaType is 'text' (no image was ever expected)
+  //  - or a thumbnail URL existed but failed to load (expired IG token, etc.)
+  // Legacy bookmarks (mediaType defaulted to 'image') with null thumbnailUrl
+  // still collapse to text-only — preserving their previous render.
   const shouldShowPlaceholder =
     showPreview &&
-    hasUsableThumbnailUrl &&
-    thumbnailLoadFailed;
+    !shouldShowThumbnail &&
+    (isTextOnly || (hasUsableThumbnailUrl && thumbnailLoadFailed));
 
   // Build the folder submenu items for the "Move to folder" option
   const folderMenuItems: MenuProps['items'] = [
@@ -190,10 +198,12 @@ export function BookmarkCard({
           >
             <SourceIcon source={bookmark.source} size={14} />
           </div>
+
+          {isVideo && <VideoPlayOverlay />}
         </div>
       )}
 
-      {/* ── Placeholder (thumbnail URL existed but failed to load) ──────────── */}
+      {/* ── Placeholder (text-only post, or thumbnail URL that failed to load) ── */}
       {shouldShowPlaceholder && (
         <div
           style={{
@@ -216,6 +226,8 @@ export function BookmarkCard({
           >
             <SourceIcon source={bookmark.source} size={48} />
           </div>
+
+          {isVideo && <VideoPlayOverlay />}
         </div>
       )}
 
@@ -286,5 +298,28 @@ export function BookmarkCard({
         </div>
       </div>
     </Card>
+  );
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Centered play-icon overlay drawn on top of the thumbnail/placeholder block
+ * for video posts. Pointer-events: none so it never intercepts card clicks.
+ */
+function VideoPlayOverlay() {
+  return (
+    <div
+      style={{
+        position:       'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        pointerEvents:  'none',
+      }}
+    >
+      <PlayCircleFilled style={{ fontSize: 56, color: 'rgba(255,255,255,0.92)', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.45))' }} />
+    </div>
   );
 }

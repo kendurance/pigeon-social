@@ -9,7 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { v4 as uuidv4 } from 'uuid';
-import type { Bookmark, RawTwitterBookmark } from '@/types';
+import type { Bookmark, BookmarkMediaType, RawTwitterBookmark } from '@/types';
 
 /**
  * Parses the Twitter-style date string returned by the API into an ISO string.
@@ -38,53 +38,58 @@ function findImageInCsv(csv: string): string | null {
 }
 
 /**
- * Scans any string field whose name hints at a thumbnail/preview/poster/card
- * image (e.g. "Card Image Url", "Preview Image Url"). The Twitter Bookmarks
- * Downloader extension may include these fields for video tweets even though
- * they're not in the documented `RawTwitterBookmark` shape.
+ * Upgrades the 48px `_normal` avatar URL Twitter exports to the 400px variant
+ * so it renders cleanly as a card thumbnail. All size variants (_normal,
+ * _bigger, _400x400, _reasonably_small) are auto-generated for every avatar,
+ * so _400x400 always exists when _normal does.
  */
-function findImageInPreviewFields(rawTweet: RawTwitterBookmark): string | null {
-  for (const [key, value] of Object.entries(rawTweet)) {
-    if (typeof value !== 'string') continue;
-    const lowerKey = key.toLowerCase();
-    const looksLikePreviewField =
-      lowerKey.includes('thumb') ||
-      lowerKey.includes('preview') ||
-      lowerKey.includes('poster') ||
-      lowerKey.includes('card');
-    if (!looksLikePreviewField) continue;
-    const image = findImageInCsv(value) ?? (isImageUrl(value) ? value : null);
-    if (image) return image;
-  }
-  return null;
+function upgradeTwitterAvatar(avatarUrl: string | undefined): string | null {
+  if (!avatarUrl) return null;
+  return avatarUrl.replace(/_normal\.(jpg|jpeg|png|webp)/i, '_400x400.$1');
 }
 
 /**
- * Picks the best available thumbnail URL for a tweet.
- * Order of preference:
- *   1. First image-looking URL in `Media URLs` (skips .mp4 video files that
- *      <img> can't render — those land in this field for video tweets).
- *   2. Any preview/poster/card-image field the export may include.
- *   3. null — text-only tweet (or video tweet with no still available),
- *      so the card falls through to its source-icon placeholder.
+ * Resolves both `mediaType` and `thumbnailUrl` from a raw tweet's Media Types
+ * field. Three branches:
+ *   - "video" / "animated_gif" → 'video' + author avatar as the static fallback
+ *     (the export only carries an .mp4 URL — no still image — so we use the
+ *     avatar as a recognisable placeholder behind a play-icon overlay)
+ *   - "photo"                  → 'image' + first image URL from Media URLs
+ *   - empty / missing          → 'text'  + null thumbnail (card shows the
+ *     grey source-icon placeholder)
  */
-function extractThumbnailUrl(rawTweet: RawTwitterBookmark): string | null {
-  return (
-    findImageInCsv(rawTweet['Media URLs'] ?? '') ??
-    findImageInPreviewFields(rawTweet)
-  );
+function resolveTwitterMedia(rawTweet: RawTwitterBookmark): {
+  mediaType: BookmarkMediaType;
+  thumbnailUrl: string | null;
+} {
+  const mediaTypes = (rawTweet['Media Types'] ?? '').toLowerCase();
+  if (mediaTypes.includes('video') || mediaTypes.includes('animated_gif')) {
+    return {
+      mediaType: 'video',
+      thumbnailUrl: upgradeTwitterAvatar(rawTweet['User Avatar Url']),
+    };
+  }
+  if (mediaTypes.includes('photo')) {
+    return {
+      mediaType: 'image',
+      thumbnailUrl: findImageInCsv(rawTweet['Media URLs'] ?? ''),
+    };
+  }
+  return { mediaType: 'text', thumbnailUrl: null };
 }
 
 /**
  * Converts a single raw Twitter bookmark object into a unified Bookmark.
  */
 function mapSingleTwitterBookmark(rawTweet: RawTwitterBookmark): Bookmark {
+  const { mediaType, thumbnailUrl } = resolveTwitterMedia(rawTweet);
   return {
     id:              uuidv4(),
     source:          'twitter',
+    mediaType,
     title:           rawTweet['Full Text']         ?? '(no text)',
     url:             rawTweet['Tweet Url']          ?? '',
-    thumbnailUrl:    extractThumbnailUrl(rawTweet),
+    thumbnailUrl,
     authorName:      `@${rawTweet['User Screen Name'] ?? rawTweet['User Name'] ?? 'unknown'}`,
     authorAvatarUrl: rawTweet['User Avatar Url']   ?? null,
     dateAdded:       parseTweetDate(rawTweet['Created At'] ?? ''),

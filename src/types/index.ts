@@ -10,6 +10,13 @@
 /** The social media platforms PigeonSocial currently supports. */
 export type BookmarkSource = 'twitter' | 'instagram' | 'youtube';
 
+/**
+ * What kind of content this card represents — drives card chrome.
+ * 'video' adds a play-icon overlay; 'text' forces the grey placeholder
+ * even when thumbnailUrl is null; 'image' is the default render path.
+ */
+export type BookmarkMediaType = 'image' | 'video' | 'text';
+
 // ── Core domain models ────────────────────────────────────────────────────────
 
 /**
@@ -22,6 +29,13 @@ export interface Bookmark {
 
   /** Which platform this came from. */
   source: BookmarkSource;
+
+  /**
+   * What kind of content this is. Drives card chrome (play-icon for 'video',
+   * grey placeholder for 'text'). Defaults to 'image' for legacy backups
+   * imported before this field existed.
+   */
+  mediaType: BookmarkMediaType;
 
   /** Display title — tweet text, caption text, or video title. */
   title: string;

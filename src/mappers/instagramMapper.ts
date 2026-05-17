@@ -63,6 +63,7 @@ function mapSingleInstagramMedia(media: RawInstagramMedia): Bookmark {
   return {
     id:              uuidv4(),
     source:          'instagram',
+    mediaType:       media.media_type === 2 ? 'video' : 'image',
     title:           extractInstagramTitle(media),
     url:             buildInstagramPostUrl(media.code),
     thumbnailUrl:    extractInstagramThumbnail(media),

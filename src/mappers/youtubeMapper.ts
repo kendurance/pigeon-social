@@ -50,6 +50,7 @@ function mapSingleYoutubeItem(item: RawYoutubeItem): Bookmark {
   return {
     id:              uuidv4(),
     source:          'youtube',
+    mediaType:       'video',
     title:           item.title         ?? '(untitled video)',
     url:             item.url           ?? '',
     thumbnailUrl:    derivedThumbnail ?? item.thumbnail ?? null,

@@ -50,12 +50,18 @@ export function detectAndMap(parsedJson: unknown): DetectAndMapResult {
     Array.isArray((parsedJson as Record<string, unknown>).folders)
   ) {
     const pigeonExport = parsedJson as PigeonExport;
+    // Legacy backups (pre-mediaType) need the field defaulted so the card
+    // render path doesn't see undefined.
+    const bookmarks = pigeonExport.bookmarks.map((b) => ({
+      ...b,
+      mediaType: b.mediaType ?? 'image',
+    }));
     return {
-      bookmarks:            pigeonExport.bookmarks,
+      bookmarks,
       folders:              pigeonExport.folders,
       detectedSource:       'pigeon-export',
       suggestedFolderName:  null,
-      message: `PigeonSocial backup: ${pigeonExport.bookmarks.length} bookmark${pigeonExport.bookmarks.length !== 1 ? 's' : ''} across ${pigeonExport.folders.length} folder${pigeonExport.folders.length !== 1 ? 's' : ''}.`,
+      message: `PigeonSocial backup: ${bookmarks.length} bookmark${bookmarks.length !== 1 ? 's' : ''} across ${pigeonExport.folders.length} folder${pigeonExport.folders.length !== 1 ? 's' : ''}.`,
     };
   }
 
