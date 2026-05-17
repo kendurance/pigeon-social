@@ -1,0 +1,746 @@
+{
+  "playlist": {
+    "name": "Programming",
+    "url": "https://www.youtube.com/playlist?list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W"
+  },
+  "items": [
+    {
+      "title": "This Is Why You Must Derive Your TypeScript Types",
+      "url": "https://www.youtube.com/watch?v=4CYkhXIDxeQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=1",
+      "channel": "Web Dev Simplified",
+      "duration": "2:07",
+      "thumbnail": "https://i.ytimg.com/vi/4CYkhXIDxeQ/hqdefault.jpg?sqp=-oaymwFBCNACELwBSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AG2CIACgA-KAgwIABABGGAgYChgMA8=&rs=AOn4CLCu7kgcNWxex51xBdI66tgQsB8x-A",
+      "views": "157K views",
+      "age": "8 months ago"
+    },
+    {
+      "title": "7 Design Patterns EVERY Developer Should Know",
+      "url": "https://www.youtube.com/watch?v=BJatgOiiht4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=2",
+      "channel": "ForrestKnight",
+      "duration": "23:09",
+      "thumbnail": "https://i.ytimg.com/vi/BJatgOiiht4/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAzOEdYUtt-8h50l31EnDfLeadcdQ",
+      "views": "1M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Every LINUX Concept Explained in 8 Minutes.",
+      "url": "https://www.youtube.com/watch?v=gBuTIrEG87s&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=3",
+      "channel": "Mr.PiwPiew",
+      "duration": "8:13",
+      "thumbnail": "https://i.ytimg.com/vi/gBuTIrEG87s/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDnJNp7coC2WfjCgns4I9mi8_RzHQ",
+      "views": "302K views",
+      "age": "7 months ago"
+    },
+    {
+      "title": "The Only Accessibility Video You Will Ever Need",
+      "url": "https://www.youtube.com/watch?v=2oiBKSjOOFE&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=4",
+      "channel": "Web Dev Simplified",
+      "duration": "37:33",
+      "thumbnail": "https://i.ytimg.com/vi/2oiBKSjOOFE/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCN9w0oyK_CUxDqiiNMvQdKOZxG7w",
+      "views": "114K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Programming Principles NOBODY Taught Me",
+      "url": "https://www.youtube.com/watch?v=QJH0n5rMs28&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=5",
+      "channel": "Shade of Code",
+      "duration": "4:24",
+      "thumbnail": "https://i.ytimg.com/vi/QJH0n5rMs28/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCRZ9pYCTGX4xFdDbcKYtQOZ0Vxbg",
+      "views": "147K views",
+      "age": "2 months ago"
+    },
+    {
+      "title": "Google GCA question with ex-Google interviewer (\"Solve gridlock in NYC\")",
+      "url": "https://www.youtube.com/watch?v=ipNWrUhZGv8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=6",
+      "channel": "IGotAnOffer: Product management",
+      "duration": "7:47",
+      "thumbnail": "https://i.ytimg.com/vi/ipNWrUhZGv8/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDO5v4PHjW9M4OTV4hL9kYKpoy3AA",
+      "views": "9K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "How to solve a Google coding interview question",
+      "url": "https://www.youtube.com/watch?v=Ti5vfu9arXQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=7",
+      "channel": "Life at Google",
+      "duration": "25:49",
+      "thumbnail": "",
+      "views": "1.4M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "how I consistently land jobs within 2-3 weeks of looking",
+      "url": "https://www.youtube.com/watch?v=opNL069v7MY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=8",
+      "channel": "Jane 🦧",
+      "duration": "0:57",
+      "thumbnail": "",
+      "views": "638K views",
+      "age": "5 months ago"
+    },
+    {
+      "title": "PRO LEAGUE DENARI SETUP (SIEGE SCHOOL) #shorts",
+      "url": "https://www.youtube.com/watch?v=CRtsOibnd3Y&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=9",
+      "channel": "VarsityGaming",
+      "duration": "1:41",
+      "thumbnail": "",
+      "views": "129K views",
+      "age": "1 month ago"
+    },
+    {
+      "title": "Algorithms and Data Structures Tutorial - Full Course for Beginners",
+      "url": "https://www.youtube.com/watch?v=8hly31xKli0&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=10",
+      "channel": "freeCodeCamp.org",
+      "duration": "5:22:09",
+      "thumbnail": "",
+      "views": "5.7M views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "How to make vibe coding not suck…",
+      "url": "https://www.youtube.com/watch?v=PLKrSVuT-Dg&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=11",
+      "channel": "Fireship",
+      "duration": "5:44",
+      "thumbnail": "",
+      "views": "853K views",
+      "age": "6 months ago"
+    },
+    {
+      "title": "10 Concepts EVERY Backend Dev Should Know",
+      "url": "https://www.youtube.com/watch?v=aJb09OHhitI&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=12",
+      "channel": "CodeHead",
+      "duration": "5:11",
+      "thumbnail": "",
+      "views": "175K views",
+      "age": "5 months ago"
+    },
+    {
+      "title": "Learn Backend Development in 5 minutes (NO PRIOR KNOWLEDGE)",
+      "url": "https://www.youtube.com/watch?v=69Js7sUocf8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=13",
+      "channel": "CodeHead",
+      "duration": "4:59",
+      "thumbnail": "",
+      "views": "123K views",
+      "age": "2 months ago"
+    },
+    {
+      "title": "Best Order to Learn Algorithms & Data Structures",
+      "url": "https://www.youtube.com/watch?v=LcL_op0eBKs&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=14",
+      "channel": "NeetCodeIO",
+      "duration": "1:00",
+      "thumbnail": "",
+      "views": "765K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "Google Coding Interview With a Google Software Engineer",
+      "url": "https://www.youtube.com/watch?v=Ebyesd3mPAA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=15",
+      "channel": "Sajjaad Khader",
+      "duration": "26:36",
+      "thumbnail": "",
+      "views": "683K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Data Structures Explained for Beginners - How I Wish I was Taught",
+      "url": "https://www.youtube.com/watch?v=O9v10jQkm5c&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=16",
+      "channel": "Sajjaad Khader",
+      "duration": "15:51",
+      "thumbnail": "",
+      "views": "929K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "The 3 Laws of Writing Readable Code",
+      "url": "https://www.youtube.com/watch?v=-AzSRHiV9Cc&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=17",
+      "channel": "Kantan Coding",
+      "duration": "5:28",
+      "thumbnail": "",
+      "views": "1.5M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "3 Years of College Computer Science in 3 Minutes",
+      "url": "https://www.youtube.com/watch?v=MIvvsqJAYh0&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=18",
+      "channel": "Prof Korupt",
+      "duration": "3:00",
+      "thumbnail": "",
+      "views": "791K views",
+      "age": "7 months ago"
+    },
+    {
+      "title": "Every Type of API Simply Explained in 9 Minutes!",
+      "url": "https://www.youtube.com/watch?v=pBASqUbZgkY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=19",
+      "channel": "Codist",
+      "duration": "9:54",
+      "thumbnail": "",
+      "views": "873K views",
+      "age": "7 months ago"
+    },
+    {
+      "title": "How to Pass the New Google Hiring Assessment in 2026!",
+      "url": "https://www.youtube.com/watch?v=MY7OVlCbNUQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=20",
+      "channel": "The Reliable Agent",
+      "duration": "8:16",
+      "thumbnail": "",
+      "views": "124K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Kafka Tutorial for Beginners | Everything you need to get started",
+      "url": "https://www.youtube.com/watch?v=QkdkLdMBuL0&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=21",
+      "channel": "TechWorld with Nana",
+      "duration": "18:33",
+      "thumbnail": "",
+      "views": "1.2M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "ML Foundations for AI Engineers (in 34 Minutes)",
+      "url": "https://www.youtube.com/watch?v=BUTjcAjfMgY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=22",
+      "channel": "Shaw Talebi",
+      "duration": "34:50",
+      "thumbnail": "",
+      "views": "374K views",
+      "age": "11 months ago"
+    },
+    {
+      "title": "How To Make Your GitHub Stand Out (Gets You Hired!)",
+      "url": "https://www.youtube.com/watch?v=z8UPAVTh2aE&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=23",
+      "channel": "Miraya Tech",
+      "duration": "8:13",
+      "thumbnail": "",
+      "views": "210K views",
+      "age": "5 months ago"
+    },
+    {
+      "title": "Lean Into Imposter Syndrome, Don't Give In to It",
+      "url": "https://www.youtube.com/watch?v=qGmwH6DyUjo&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=24",
+      "channel": "Harvard Business Review",
+      "duration": "4:28",
+      "thumbnail": "",
+      "views": "2.4M views",
+      "age": "9 months ago"
+    },
+    {
+      "title": "All Machine Learning Concepts Explained in 22 Minutes",
+      "url": "https://www.youtube.com/watch?v=Fa_V9fP2tpU&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=25",
+      "channel": "Infinite Codes",
+      "duration": "22:22",
+      "thumbnail": "",
+      "views": "459K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "It took me 10+ years to realize what I’ll tell you in 8 minutes",
+      "url": "https://www.youtube.com/watch?v=RGaW82k4dK4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=26",
+      "channel": "Web Developete",
+      "duration": "8:38",
+      "thumbnail": "",
+      "views": "3.3M views",
+      "age": "11 months ago"
+    },
+    {
+      "title": "How to Handle Accessibility Like a Senior Dev",
+      "url": "https://www.youtube.com/watch?v=Y7nhXvJ7yH8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=27",
+      "channel": "Web Dev Simplified",
+      "duration": "20:33",
+      "thumbnail": "",
+      "views": "20K views",
+      "age": "2 months ago"
+    },
+    {
+      "title": "Master Full-Stack Docker & CI/CD – Build a Production-Ready Pipeline",
+      "url": "https://www.youtube.com/watch?v=lEcULR30-GM&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=28",
+      "channel": "freeCodeCamp.org",
+      "duration": "3:58:43",
+      "thumbnail": "",
+      "views": "76K views",
+      "age": "2 months ago"
+    },
+    {
+      "title": "The unfair way I got good at Leetcode",
+      "url": "https://www.youtube.com/watch?v=GPIuPRqDGG8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=29",
+      "channel": "Dave Burji",
+      "duration": "6:47",
+      "thumbnail": "",
+      "views": "823K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "The AI Bubble Is About to Burst.",
+      "url": "https://www.youtube.com/watch?v=37aUuoRyMhM&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=30",
+      "channel": "OverEasy",
+      "duration": "8:24",
+      "thumbnail": "",
+      "views": "1.4M views",
+      "age": "7 months ago"
+    },
+    {
+      "title": "APIs Explained (in 4 Minutes)",
+      "url": "https://www.youtube.com/watch?v=bxuYDT-BWaI&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=31",
+      "channel": "Exponent",
+      "duration": "3:57",
+      "thumbnail": "",
+      "views": "2.5M views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "Figma Oversimplified",
+      "url": "https://www.youtube.com/watch?v=hdEDKwI46_E&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=32",
+      "channel": "Traversy Media",
+      "duration": "13:49",
+      "thumbnail": "",
+      "views": "39K views",
+      "age": "9 months ago"
+    },
+    {
+      "title": "The intro to Docker I wish I had when I started",
+      "url": "https://www.youtube.com/watch?v=Ud7Npgi6x8E&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=33",
+      "channel": "typecraft",
+      "duration": "18:27",
+      "thumbnail": "",
+      "views": "953K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Python Full Course for Beginners",
+      "url": "https://www.youtube.com/watch?v=K5KVEU3aaeQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=34",
+      "channel": "Programming with Mosh",
+      "duration": "2:02:21",
+      "thumbnail": "",
+      "views": "6.2M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "All 17 React Best Practices (IMPORTANT!)",
+      "url": "https://www.youtube.com/watch?v=5r25Y9Vg2P4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=35",
+      "channel": "ByteGrad",
+      "duration": "1:46:11",
+      "thumbnail": "",
+      "views": "325K views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "how programmers *actually* review code #programming",
+      "url": "https://www.youtube.com/watch?v=lUBPD2bWodA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=36",
+      "channel": "Alberta Tech",
+      "duration": "0:57",
+      "thumbnail": "",
+      "views": "3.4M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "Front-end web development is changing, quickly",
+      "url": "https://www.youtube.com/watch?v=TBIjgBVFjVI&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=37",
+      "channel": "Fireship",
+      "duration": "3:43",
+      "thumbnail": "",
+      "views": "1.6M views",
+      "age": "1 year ago"
+    },
+    {
+      "title": "JavaScript Visualized - Event Loop, Web APIs, (Micro)task Queue",
+      "url": "https://www.youtube.com/watch?v=eiC58R16hb8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=38",
+      "channel": "Lydia Hallie",
+      "duration": "12:35",
+      "thumbnail": "",
+      "views": "1.1M views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "Cybersecurity for Beginners: How to use Wireshark",
+      "url": "https://www.youtube.com/watch?v=zWoHJ3oGRGY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=39",
+      "channel": "PC Security Channel",
+      "duration": "9:29",
+      "thumbnail": "",
+      "views": "289K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "C Programming Full Course for free ⚙️",
+      "url": "https://www.youtube.com/watch?v=87SH2Cn0s9A&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=40",
+      "channel": "Bro Code",
+      "duration": "4:05:00",
+      "thumbnail": "",
+      "views": "4.4M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Build a Database Programming Interface!",
+      "url": "https://www.youtube.com/watch?v=_JhHc6dlOfo&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=41",
+      "channel": "Code with Ania Kubów",
+      "duration": "1:00",
+      "thumbnail": "",
+      "views": "28K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "60-30-10 Color Rule",
+      "url": "https://www.youtube.com/watch?v=UWwNIMHFdW4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=42",
+      "channel": "Jesse Showalter",
+      "duration": "6:18",
+      "thumbnail": "",
+      "views": "2.1M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "lofi hip hop radio 📚 beats to relax/study to",
+      "url": "https://www.youtube.com/watch?v=jfKfPfyJRdk&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=43",
+      "channel": "Lofi Girl",
+      "duration": "",
+      "thumbnail": "",
+      "views": "",
+      "age": ""
+    },
+    {
+      "title": "Javascript interview questions and answers #shorts #react #javascript #interview",
+      "url": "https://www.youtube.com/watch?v=yfcfPFsYkdU&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=44",
+      "channel": "Akash Ingole",
+      "duration": "0:46",
+      "thumbnail": "",
+      "views": "18K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "Why I Don’t Use Arrow Functions With const/let",
+      "url": "https://www.youtube.com/watch?v=5iGGvJn8K1U&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=45",
+      "channel": "Web Dev Simplified",
+      "duration": "6:48",
+      "thumbnail": "",
+      "views": "190K views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "The Best React State Management Solution Has Been There All Along",
+      "url": "https://www.youtube.com/watch?v=oZZEI23Ri6E&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=46",
+      "channel": "Web Dev Simplified",
+      "duration": "5:38",
+      "thumbnail": "",
+      "views": "178K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "How to See Rerenders in React Apps🤯",
+      "url": "https://www.youtube.com/watch?v=JpJYm3B6UwM&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=47",
+      "channel": "Coding in Flow",
+      "duration": "1:00",
+      "thumbnail": "",
+      "views": "15K views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "CSS Anchor Is The Best New CSS Feature Since Flexbox",
+      "url": "https://www.youtube.com/watch?v=B4Y9Ed4lLAI&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=48",
+      "channel": "Web Dev Simplified",
+      "duration": "15:39",
+      "thumbnail": "",
+      "views": "404K views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "I tried 50 Programming Courses. Here are Top 5.",
+      "url": "https://www.youtube.com/watch?v=dqlO6_5rZSQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=49",
+      "channel": "Sahil & Sarra",
+      "duration": "7:09",
+      "thumbnail": "",
+      "views": "2.7M views",
+      "age": "2 years ago"
+    },
+    {
+      "title": "Uncle Bob on TDD",
+      "url": "https://www.youtube.com/watch?v=GvAzrC6-spQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=50",
+      "channel": "Victor Rentea",
+      "duration": "3:47",
+      "thumbnail": "",
+      "views": "26K views",
+      "age": "9 years ago"
+    },
+    {
+      "title": "The ultimate guide to web performance",
+      "url": "https://www.youtube.com/watch?v=0fONene3OIA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=51",
+      "channel": "Beyond Fireship",
+      "duration": "6:43",
+      "thumbnail": "",
+      "views": "547K views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "Top 6 Coding Interview Concepts (Data Structures & Algorithms)",
+      "url": "https://www.youtube.com/watch?v=ft0owvS5tQA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=52",
+      "channel": "NeetCode",
+      "duration": "10:51",
+      "thumbnail": "",
+      "views": "693K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "you need to learn SQL RIGHT NOW!! (SQL Tutorial for Beginners)",
+      "url": "https://www.youtube.com/watch?v=xiUTqnI6xk8&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=53",
+      "channel": "NetworkChuck",
+      "duration": "24:25",
+      "thumbnail": "",
+      "views": "2M views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "Junior vs Senior React Folder Structure - How To Organize React Projects",
+      "url": "https://www.youtube.com/watch?v=UUga4-z7b6s&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=54",
+      "channel": "Web Dev Simplified",
+      "duration": "16:16",
+      "thumbnail": "",
+      "views": "545K views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "Build a Chrome Extension – Course for Beginners",
+      "url": "https://www.youtube.com/watch?v=0n809nd4Zu4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=55",
+      "channel": "freeCodeCamp.org",
+      "duration": "1:06:25",
+      "thumbnail": "",
+      "views": "766K views",
+      "age": "3 years ago"
+    },
+    {
+      "title": "10 Best VSCode Keyboard Shortcuts",
+      "url": "https://www.youtube.com/watch?v=YgI5GEZzrIo&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=56",
+      "channel": "Web Dev Simplified",
+      "duration": "1:00",
+      "thumbnail": "",
+      "views": "612K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "React Query in 100 Seconds",
+      "url": "https://www.youtube.com/watch?v=novnyCaa7To&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=57",
+      "channel": "Fireship",
+      "duration": "2:33",
+      "thumbnail": "",
+      "views": "761K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "GraphQL With React Tutorial - Apollo Client",
+      "url": "https://www.youtube.com/watch?v=YyUWW04HwKY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=58",
+      "channel": "PedroTech",
+      "duration": "32:51",
+      "thumbnail": "",
+      "views": "231K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "Redux in 100 Seconds",
+      "url": "https://www.youtube.com/watch?v=_shA5Xwe8_4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=59",
+      "channel": "Fireship",
+      "duration": "2:33",
+      "thumbnail": "",
+      "views": "972K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "If You Aren’t Doing These 3 Things You Are Making Debugging Harder",
+      "url": "https://www.youtube.com/watch?v=Yek5ax-L0bk&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=60",
+      "channel": "Web Dev Simplified",
+      "duration": "0:49",
+      "thumbnail": "",
+      "views": "50K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "my code works… why?",
+      "url": "https://www.youtube.com/watch?v=9BvBRXkJA58&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=61",
+      "channel": "Fireship",
+      "duration": "0:30",
+      "thumbnail": "",
+      "views": "2.8M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Why Most Habit Trackers Make Things Worse",
+      "url": "https://www.youtube.com/watch?v=fSwpe8r50_o&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=62",
+      "channel": "CGP Grey",
+      "duration": "6:08",
+      "thumbnail": "",
+      "views": "1.9M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Debugger basics in IntelliJ IDEA (Mala Gupta)",
+      "url": "https://www.youtube.com/watch?v=lAWnIP1S6UA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=63",
+      "channel": "",
+      "duration": "9:34",
+      "thumbnail": "",
+      "views": "277K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "React Interview Questions | A Preparation Guide",
+      "url": "https://www.youtube.com/watch?v=tfPq0iCJioQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=64",
+      "channel": "",
+      "duration": "8:29",
+      "thumbnail": "",
+      "views": "168K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "Top 10 Java Frameworks in 2024 | Spring, Hibernate, Struts, GWT,JSF | Java Training | Edureka",
+      "url": "https://www.youtube.com/watch?v=ELMdLIMTErc&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=65",
+      "channel": "edureka!",
+      "duration": "19:57",
+      "thumbnail": "",
+      "views": "89K views",
+      "age": "6 years ago"
+    },
+    {
+      "title": "2022 is gonna be wild for developers...",
+      "url": "https://www.youtube.com/watch?v=LOpFYMPXqE4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=66",
+      "channel": "Fireship",
+      "duration": "11:20",
+      "thumbnail": "",
+      "views": "865K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "10 Ways To Be A Better Developer",
+      "url": "https://www.youtube.com/watch?v=mK7lDooAGJw&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=67",
+      "channel": "Traversy Media",
+      "duration": "12:04",
+      "thumbnail": "",
+      "views": "164K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "The 1 Coding Project Idea Guaranteed To Get You A Software Development Job",
+      "url": "https://www.youtube.com/watch?v=oC483DTjRXU&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=68",
+      "channel": "Coder Foundry",
+      "duration": "22:07",
+      "thumbnail": "",
+      "views": "1.2M views",
+      "age": "6 years ago"
+    },
+    {
+      "title": "Ultimate Tailwind CSS Tutorial // Build a Discord-inspired Animated Navbar",
+      "url": "https://www.youtube.com/watch?v=pfaSUYaSgRo&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=69",
+      "channel": "Fireship",
+      "duration": "12:56",
+      "thumbnail": "",
+      "views": "1.6M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Learning Functional Programming with JavaScript - Anjana Vakil - JSUnconf",
+      "url": "https://www.youtube.com/watch?v=e-5obm1G_FY&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=70",
+      "channel": "JSConf",
+      "duration": "29:57",
+      "thumbnail": "",
+      "views": "2.9M views",
+      "age": "9 years ago"
+    },
+    {
+      "title": "Learn the MERN Stack - Full Tutorial (MongoDB, Express, React, Node.js)",
+      "url": "https://www.youtube.com/watch?v=7CqJlxBYj-M&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=71",
+      "channel": "freeCodeCamp.org",
+      "duration": "1:47:02",
+      "thumbnail": "",
+      "views": "1.7M views",
+      "age": "6 years ago"
+    },
+    {
+      "title": "Async Await try-catch hell",
+      "url": "https://www.youtube.com/watch?v=ITogH7lJTyE&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=72",
+      "channel": "Fireship",
+      "duration": "0:46",
+      "thumbnail": "",
+      "views": "1.5M views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Is your memory leaking?",
+      "url": "https://www.youtube.com/watch?v=XQMVOoPZLYs&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=73",
+      "channel": "Fireship",
+      "duration": "0:40",
+      "thumbnail": "",
+      "views": "446K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Pootie Tang",
+      "url": "https://www.youtube.com/watch?v=cy38mSl_6dE&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=74",
+      "channel": "YouTube Movies & TV",
+      "duration": "1:21:22",
+      "thumbnail": "",
+      "views": "",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Test-Driven Development // Fun TDD Introduction with JavaScript",
+      "url": "https://www.youtube.com/watch?v=Jv2uxzhPFl4&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=75",
+      "channel": "Fireship",
+      "duration": "12:55",
+      "thumbnail": "",
+      "views": "729K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "SEO for Developers in 100 Seconds",
+      "url": "https://www.youtube.com/watch?v=-B58GgsehKQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=76",
+      "channel": "Fireship",
+      "duration": "11:52",
+      "thumbnail": "https://i.ytimg.com/vi/-B58GgsehKQ/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLBsxrH5WfbTVJlnsyM7cykrHxyy8A",
+      "views": "677K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "Software Testing Explained in 100 Seconds",
+      "url": "https://www.youtube.com/watch?v=u6QfIXgjwGQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=77",
+      "channel": "Fireship",
+      "duration": "2:16",
+      "thumbnail": "https://i.ytimg.com/vi/u6QfIXgjwGQ/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCUa5XgHVQNmffruAloTmnWz_wtDQ",
+      "views": "497K views",
+      "age": "4 years ago"
+    },
+    {
+      "title": "Java Interface Tutorial",
+      "url": "https://www.youtube.com/watch?v=Yat8l37XGFA&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=78",
+      "channel": "",
+      "duration": "14:49",
+      "thumbnail": "https://i.ytimg.com/vi/Yat8l37XGFA/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDLEvtU5p6g1dAI1WRlbIhmx6Rfaw",
+      "views": "159K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "Uncle Bob Martin - The Clean Coder",
+      "url": "https://www.youtube.com/watch?v=NeXQEJNWO5w&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=79",
+      "channel": "StreamACon Streaming Conferences",
+      "duration": "1:04:06",
+      "thumbnail": "https://i.ytimg.com/vi/NeXQEJNWO5w/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAljGDT0b488XkCo2_fCUJbCCnO5Q",
+      "views": "154K views",
+      "age": "7 years ago"
+    },
+    {
+      "title": "The S.O.L.I.D. Principles of OO & Agile Design - Uncle Bob Martin",
+      "url": "https://www.youtube.com/watch?v=t86v3N4OshQ&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=80",
+      "channel": "TDD TV",
+      "duration": "1:12:12",
+      "thumbnail": "https://i.ytimg.com/vi/t86v3N4OshQ/hqdefault.jpg?sqp=-oaymwFBCNACELwBSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGGUgWyhOMA8=&rs=AOn4CLADn_DhKllR7y97DRH9rw8aIW2d9g",
+      "views": "277K views",
+      "age": "11 years ago"
+    },
+    {
+      "title": "CEOs STRUGGLE To Explain Why They TRACK workers | #grindreel",
+      "url": "https://www.youtube.com/watch?v=5S_Y_CJLiO0&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=81",
+      "channel": "Joshua Fluke",
+      "duration": "12:07",
+      "thumbnail": "https://i.ytimg.com/vi/5S_Y_CJLiO0/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCoQ3YGT-0IhQ5MCeyBXrOhxszimA",
+      "views": "375K views",
+      "age": "5 years ago"
+    },
+    {
+      "title": "How To Think Like A Programmer",
+      "url": "https://www.youtube.com/watch?v=azcrPFhaY9k&list=PLyOkewAKXl1TaEOkFwNY9KJkqIS76lT0W&index=82",
+      "channel": "Coding Tech",
+      "duration": "1:00:07",
+      "thumbnail": "https://i.ytimg.com/vi/azcrPFhaY9k/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAScP68oVEtSm3f6V3R5kArqwIzkQ",
+      "views": "2.2M views",
+      "age": "7 years ago"
+    }
+  ]
+}
