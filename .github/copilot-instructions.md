@@ -242,7 +242,7 @@ App
 │   │
 │   ├── Masonry Grid
 │   │   └── BookmarkCard (× N)
-│   │       ├── Thumbnail (conditional on settings.showPreviews)
+│   │       ├── Thumbnail (conditional on settings.showPreviews) → click opens BookmarkEmbedModal
 │   │       ├── Source badge (overlaid on thumbnail)
 │   │       ├── Folder tag
 │   │       ├── Context menu (Open, Move to folder, Delete)
@@ -252,7 +252,12 @@ App
 │   │
 │   ├── Infinite scroll sentinel (IntersectionObserver)
 │   ├── ImportModal
-│   └── FolderModal
+│   ├── ExportModal
+│   ├── FolderModal
+│   └── BookmarkEmbedModal (click-through inline preview)
+│       ├── Instagram → iframe to /p/{code}/embed/captioned
+│       ├── YouTube   → iframe to /embed/{id} (16:9)
+│       └── Twitter   → widgets.js-rendered blockquote
 │
 └── SettingsPage
 ├── Source visibility toggles
@@ -316,6 +321,15 @@ PigeonSocial itself produces.
 
 ### Phase 2c — Bookmark Enhancements
 
+- [x] **Click-through embed preview modal** — clicking a card's thumbnail or
+  placeholder opens [BookmarkEmbedModal](../src/components/BookmarkEmbedModal.tsx),
+  which renders the original post inline using each source's own embed:
+  Instagram (`/p/{code}/embed/captioned` iframe), YouTube (`/embed/{id}`
+  iframe in a 16:9 container), Twitter (`platform.twitter.com/widgets.js`
+  blockquote render). Title and ⋯ menu are unchanged. URL parsing helpers
+  live in [extractEmbedIds.ts](../src/utils/extractEmbedIds.ts); Twitter's
+  widgets.js is lazy-loaded once on first use. No proxy needed — these are
+  all CORS-friendly cross-origin embeds
 - [ ] **Tags UI** — chip input on each card to add/remove tags; the `tags`
   field already exists in the data model and DB schema
 - [ ] **Tag filter** — add tag filtering to the filter panel alongside source

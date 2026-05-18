@@ -20,6 +20,7 @@ import { useAppStore, selectIsFiltered } from '@/store/useAppStore';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterPanel } from '@/components/FilterPanel';
 import { BookmarkCard } from '@/components/BookmarkCard';
+import { BookmarkEmbedModal } from '@/components/BookmarkEmbedModal';
 import { ImportModal } from '@/components/ImportModal';
 import { FolderModal } from '@/components/FolderModal';
 import { ExportModal } from '@/components/ExportModal';
@@ -53,6 +54,9 @@ export function MainPage({ session, onLogout }: MainPageProps) {
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [folderModalOpen, setFolderModalOpen] = useState(false);
+
+  // The bookmark whose embed preview is currently open. Null = no preview.
+  const [previewBookmark, setPreviewBookmark] = useState<Bookmark | null>(null);
 
   // ── Infinite scroll: how many items are currently rendered ─────────────────
   const isMobile     = window.innerWidth < 600;
@@ -270,6 +274,7 @@ export function MainPage({ session, onLogout }: MainPageProps) {
                 showPreview={settings.showPreviews}
                 onMoveToFolder={handleMoveToFolder}
                 onDelete={handleDeleteBookmark}
+                onPreviewClick={setPreviewBookmark}
               />
             ))}
           </Masonry>
@@ -317,6 +322,11 @@ export function MainPage({ session, onLogout }: MainPageProps) {
         onClose={() => setFolderModalOpen(false)}
         folders={allFolders ?? []}
         onChanged={() => {}}
+      />
+
+      <BookmarkEmbedModal
+        bookmark={previewBookmark}
+        onClose={() => setPreviewBookmark(null)}
       />
     </>
   );

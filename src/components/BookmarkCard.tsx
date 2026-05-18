@@ -38,6 +38,9 @@ interface BookmarkCardProps {
   onMoveToFolder: (bookmarkId: string, folderId: string | null) => void;
   /** Called when the user deletes the bookmark. */
   onDelete: (bookmarkId: string) => void;
+  /** Called when the user clicks the thumbnail/placeholder, asking the
+   *  parent to open the embed preview modal for this bookmark. */
+  onPreviewClick?: (bookmark: Bookmark) => void;
 }
 
 export function BookmarkCard({
@@ -46,6 +49,7 @@ export function BookmarkCard({
   showPreview,
   onMoveToFolder,
   onDelete,
+  onPreviewClick,
 }: BookmarkCardProps) {
   /** Index into `thumbnailUrlChain` for which URL is currently being tried.
    *  Incremented each time the <img> fires onError. When it exceeds the chain
@@ -161,12 +165,19 @@ export function BookmarkCard({
       {/* ── Thumbnail area ─────────────────────────────────────────────────── */}
       {shouldShowThumbnail && (
         <div
+          onClick={() => onPreviewClick?.(bookmark)}
           style={{
             position:        'relative',
             width:           '100%',
             paddingTop:      '56.25%',  // 16:9 aspect ratio box
             backgroundColor: '#f0f0f0',
             overflow:        'hidden',
+            cursor:          onPreviewClick ? 'pointer' : 'default',
+            // `manipulation` tells the browser to treat touch input here as a
+            // fast click only — no pan, no double-tap zoom. Prevents the
+            // "tap turns into drag and scrolls the page behind the modal"
+            // mobile glitch.
+            touchAction:     'manipulation',
           }}
         >
           <img
@@ -208,12 +219,19 @@ export function BookmarkCard({
       {/* ── Placeholder (text-only post, or thumbnail URL that failed to load) ── */}
       {shouldShowPlaceholder && (
         <div
+          onClick={() => onPreviewClick?.(bookmark)}
           style={{
             position:        'relative',
             width:           '100%',
             paddingTop:      '56.25%',
             backgroundColor: '#f5f5f5',
             overflow:        'hidden',
+            cursor:          onPreviewClick ? 'pointer' : 'default',
+            // `manipulation` tells the browser to treat touch input here as a
+            // fast click only — no pan, no double-tap zoom. Prevents the
+            // "tap turns into drag and scrolls the page behind the modal"
+            // mobile glitch.
+            touchAction:     'manipulation',
           }}
         >
           <div
