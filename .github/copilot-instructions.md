@@ -284,23 +284,23 @@ App
 
 ---
 
-### Phase 2a — Backup & Restore (Priority)
+### Phase 2a — Backup & Restore ✅ Complete
 
 The export format uses the `PigeonExport` schema defined in section 6. It is
 distinct from raw social media export files and is the only file format
 PigeonSocial itself produces.
 
-- [ ] **Export selected folders** — user selects one or more folders from a
+- [x] **Export selected folders** — user selects one or more folders from a
   modal; downloads a `pigeon-export-{date}.json` file containing the selected
   `Folder` records and all `Bookmark` records whose `folderId` matches
-- [ ] **Export all** — convenience option to export every folder and every
+- [x] **Export all** — convenience option to export every folder and every
   bookmark (including uncategorized) in one file
-- [ ] **Restore from export** — the ImportModal's auto-detection logic learns
+- [x] **Restore from export** — the ImportModal's auto-detection logic learns
   to recognize the `PigeonExport` schema (keyed on `version` + `exportedAt`
   fields) and re-imports folders and bookmarks, restoring `folderId`
   relationships; duplicate URLs are skipped by default with a count reported
   to the user
-- [ ] **Conflict handling** — if a folder with the same name already exists
+- [x] **Conflict handling** — if a folder with the same name already exists
   during restore, prompt the user to merge into the existing folder or create
   a new one with a disambiguated name
 
@@ -308,14 +308,14 @@ PigeonSocial itself produces.
 
 ### Phase 2b — Import Improvements
 
-- [ ] **Multi-file import** — allow selecting multiple JSON files in one
+- [ ] **Multi-file import** — allow selecting multiple JSON files in one; recognize differing sources within the same import
   session rather than repeating the import flow
-- [ ] **Duplicate detection** — skip bookmarks whose source URL already exists
-  in the database; report the skipped count to the user after import
+- [ ] **Duplicate detection** — update bookmarks whose source URL already exists
+  in the database (based on that source's ID); report the skipped count to the user after import
 - [ ] **Instagram pagination** — accept additional page captures and merge
   them into the existing Instagram bookmark set
 - [ ] **Import history** — log of previous import sessions showing source,
-  item count, and timestamp
+  item count, and timestamp; this will be on a different page, like system settings
 
 ---
 
