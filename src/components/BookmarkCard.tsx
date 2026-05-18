@@ -47,8 +47,10 @@ export function BookmarkCard({
   onMoveToFolder,
   onDelete,
 }: BookmarkCardProps) {
-  /** Controls whether the thumbnail failed to load (shows fallback instead). */
-  const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
+  /** Index into `thumbnailUrlChain` for which URL is currently being tried.
+   *  Incremented each time the <img> fires onError. When it exceeds the chain
+   *  length, we give up and show the placeholder. */
+  const [attemptIndex, setAttemptIndex] = useState(0);
 
   // Default for legacy bookmarks imported before mediaType existed.
   const effectiveMediaType: BookmarkMediaType = bookmark.mediaType ?? 'image';
@@ -58,26 +60,25 @@ export function BookmarkCard({
   // Reject obviously-broken URLs up front: empty strings and data: URIs (which
   // can sneak in as lazy-load placeholders) succeed in <img> without firing
   // onError, leaving a broken-icon glyph in the layout.
-  const hasUsableThumbnailUrl =
-    bookmark.thumbnailUrl !== null &&
-    bookmark.thumbnailUrl.trim() !== '' &&
-    !bookmark.thumbnailUrl.startsWith('data:');
+  const thumbnailUrlChain = buildThumbnailUrlChain(bookmark);
+
+  const currentThumbnailUrl: string | null = thumbnailUrlChain[attemptIndex] ?? null;
+  const allAttemptsFailed = attemptIndex >= thumbnailUrlChain.length;
 
   const shouldShowThumbnail =
     showPreview &&
     !isTextOnly &&
-    hasUsableThumbnailUrl &&
-    !thumbnailLoadFailed;
+    currentThumbnailUrl !== null;
 
   // Show the grey source-icon placeholder when:
   //  - mediaType is 'text' (no image was ever expected)
-  //  - or a thumbnail URL existed but failed to load (expired IG token, etc.)
-  // Legacy bookmarks (mediaType defaulted to 'image') with null thumbnailUrl
-  // still collapse to text-only — preserving their previous render.
+  //  - or every URL in the chain has failed to load (expired IG token, etc.)
+  // Legacy bookmarks (mediaType defaulted to 'image') with no usable URL still
+  // collapse to text-only — preserving their previous render.
   const shouldShowPlaceholder =
     showPreview &&
     !shouldShowThumbnail &&
-    (isTextOnly || (hasUsableThumbnailUrl && thumbnailLoadFailed));
+    (isTextOnly || (thumbnailUrlChain.length > 0 && allAttemptsFailed));
 
   // Build the folder submenu items for the "Move to folder" option
   const folderMenuItems: MenuProps['items'] = [
@@ -169,9 +170,10 @@ export function BookmarkCard({
           }}
         >
           <img
-            src={bookmark.thumbnailUrl!}
+            src={currentThumbnailUrl!}
             alt={bookmark.title}
-            onError={() => setThumbnailLoadFailed(true)}
+            referrerPolicy="no-referrer"
+            onError={() => setAttemptIndex((i) => i + 1)}
             style={{
               position:   'absolute',
               top:        0,
@@ -302,6 +304,59 @@ export function BookmarkCard({
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Builds the ordered list of thumbnail URLs to try, in priority order.
+ *
+ * For Instagram, the chain is three tiers:
+ *   1. The direct CDN URL from `image_versions2.candidates[0]` — fast but its
+ *      signed token expires in ~5 days. Works for fresh imports.
+ *   2. `authorAvatarUrl` — the creator's profile picture, scraped from the
+ *      public profile page at import time (see fetchInstagramAvatars). Its
+ *      signed token lasts ~months, so it long outlives tier 1.
+ *   3. A generated initials avatar from `ui-avatars.com` with IG-pink (E1306C)
+ *      backdrop and the creator's first letters. Always renders (proper
+ *      image/png + CORS, year-long browser cache, no rate limit), giving each
+ *      card a per-creator distinct image even when the real thumbnail is gone.
+ *
+ * Earlier rounds tried `instagram.com/p/{code}/media/?size=l` and
+ * `unavatar.io/instagram/{username}` — both were blocked by Chrome's Opaque
+ * Response Blocking (the IG endpoint serves text/html for the 302; unavatar
+ * returns application/json + nosniff once its 25-req/hour free tier is
+ * exhausted). ui-avatars is purpose-built for `<img>` and avoids both pitfalls.
+ *
+ * For other sources, returns just the original thumbnailUrl (if usable).
+ */
+function buildThumbnailUrlChain(bookmark: Bookmark): string[] {
+  const isUsable = (u: string | null | undefined): u is string =>
+    typeof u === 'string' && u.trim() !== '' && !u.startsWith('data:');
+
+  const chain: string[] = [];
+  if (isUsable(bookmark.thumbnailUrl)) chain.push(bookmark.thumbnailUrl);
+
+  if (bookmark.source === 'instagram') {
+    if (isUsable(bookmark.authorAvatarUrl)) chain.push(bookmark.authorAvatarUrl);
+
+    // Skip the literal "@instagram" mapper fallback — every card would share
+    // the same generated initials, which defeats the per-creator distinction.
+    const username = bookmark.authorName.startsWith('@')
+      ? bookmark.authorName.slice(1)
+      : bookmark.authorName;
+    if (username && username !== 'instagram') {
+      const params = new URLSearchParams({
+        name:       username,
+        size:       '480',
+        background: 'E1306C',   // Instagram brand pink
+        color:      'fff',
+        bold:       'true',
+        format:     'png',
+      });
+      chain.push(`https://ui-avatars.com/api/?${params.toString()}`);
+    }
+  }
+
+  return chain;
+}
 
 /**
  * Centered play-icon overlay drawn on top of the thumbnail/placeholder block

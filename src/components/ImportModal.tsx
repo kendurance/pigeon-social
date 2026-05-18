@@ -14,12 +14,13 @@ import { useState, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
   Modal, Upload, Alert, Button, Space, Checkbox, Input,
-  Radio, Typography, Divider, Tag,
+  Radio, Typography, Divider, Tag, Progress,
 } from 'antd';
 import { InboxOutlined, CheckCircleOutlined, RestOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import db from '@/db/database';
 import { detectAndMap } from '@/mappers';
+import { fetchInstagramAvatars } from '@/utils/fetchInstagramAvatars';
 import type { Folder } from '@/types';
 
 const { Dragger } = Upload;
@@ -48,6 +49,11 @@ export function ImportModal({ open, onClose, onImported }: ImportModalProps) {
   const [createFolder,      setCreateFolder]      = useState(false);
   const [folderNameInput,   setFolderNameInput]   = useState('');
 
+  // Tracks Instagram avatar-fetch progress so the modal can show a progress
+  // bar during the ~14s first-import wait. Null when no IG enrichment is
+  // running (initial state, non-IG sources, after completion).
+  const [avatarProgress, setAvatarProgress] = useState<{ completed: number; total: number } | null>(null);
+
   // Map from exportedFolder.id → 'merge' | 'rename' for PigeonExport conflicts.
   // Defaults to 'merge' at read time if the key is absent.
   const [conflictResolutions, setConflictResolutions] = useState<Map<string, 'merge' | 'rename'>>(new Map());
@@ -64,6 +70,7 @@ export function ImportModal({ open, onClose, onImported }: ImportModalProps) {
     setCreateFolder(false);
     setFolderNameInput('');
     setConflictResolutions(new Map());
+    setAvatarProgress(null);
   }
 
   function handleClose() {
@@ -214,6 +221,42 @@ export function ImportModal({ open, onClose, onImported }: ImportModalProps) {
         ...bookmark,
         folderId: targetFolderId,
       }));
+
+      // Instagram-only: enrich with creator avatars by scraping the public
+      // profile page's og:image. The saved-posts API doesn't include
+      // profile_pic_url, and the avatar URL outlives the feed-image URL by
+      // months — so BookmarkCard can fall through from the (soon-stale)
+      // feed image to a durable avatar.
+      //
+      // We seed fetchInstagramAvatars with avatars already in the DB so that
+      // re-imports don't hammer IG for usernames we've resolved before.
+      if (mappingResult.detectedSource === 'instagram') {
+        const cachedAvatars: Record<string, string> = {};
+        const existingIgBookmarks = await db.bookmarks
+          .where('source').equals('instagram')
+          .toArray();
+        for (const existing of existingIgBookmarks) {
+          if (existing.authorAvatarUrl) {
+            const cachedKey = existing.authorName.replace(/^@/, '');
+            cachedAvatars[cachedKey] = existing.authorAvatarUrl;
+          }
+        }
+
+        const igUsernames = bookmarksToInsert
+          .map((b) => b.authorName.replace(/^@/, ''))
+          .filter((u) => u && u !== 'instagram');
+        const avatarLookup = await fetchInstagramAvatars(
+          igUsernames,
+          cachedAvatars,
+          (completed, total) => setAvatarProgress({ completed, total }),
+        );
+        setAvatarProgress(null);
+        for (const bookmark of bookmarksToInsert) {
+          const username  = bookmark.authorName.replace(/^@/, '');
+          const avatarUrl = avatarLookup[username];
+          if (avatarUrl) bookmark.authorAvatarUrl = avatarUrl;
+        }
+      }
 
       // Bulk insert into IndexedDB (much faster than inserting one at a time)
       await db.bookmarks.bulkPut(bookmarksToInsert);
@@ -408,6 +451,22 @@ export function ImportModal({ open, onClose, onImported }: ImportModalProps) {
                 )}
               </div>
             )}
+
+          {/* Instagram avatar-fetch progress — visible during the serial
+              web_profile_info loop, which can take ~14s on a first import */}
+          {avatarProgress !== null && avatarProgress.total > 0 && (
+            <div>
+              <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>
+                Fetching Instagram creator avatars — {avatarProgress.completed} / {avatarProgress.total}
+              </Text>
+              <Progress
+                percent={Math.round((avatarProgress.completed / avatarProgress.total) * 100)}
+                size="small"
+                strokeColor="#E1306C"
+                showInfo={false}
+              />
+            </div>
+          )}
 
           {/* Import / Restore button */}
           {parsedFileContent !== null && !parseError && (

@@ -68,7 +68,7 @@ function mapSingleInstagramMedia(media: RawInstagramMedia): Bookmark {
     url:             buildInstagramPostUrl(media.code),
     thumbnailUrl:    extractInstagramThumbnail(media),
     authorName:      media.user?.username ? `@${media.user.username}` : '@instagram',
-    authorAvatarUrl: null,   // not included in saved posts API response
+    authorAvatarUrl: null,   // not in the saved-posts API; ImportModal patches this post-map via fetchInstagramAvatars
     dateAdded:       new Date().toISOString(),  // IG export doesn't include save date
     folderId:        null,
     tags:            [],
