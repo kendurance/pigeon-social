@@ -15,14 +15,15 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import Masonry from 'react-masonry-css';
 import { Spin, Empty, FloatButton } from 'antd';
-import { ImportOutlined, FolderAddOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
 import db from '@/db/database';
 import { useAppStore, selectIsFiltered } from '@/store/useAppStore';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterPanel } from '@/components/FilterPanel';
 import { BookmarkCard } from '@/components/BookmarkCard';
+import { BookmarkEmbedModal } from '@/components/BookmarkEmbedModal';
 import { ImportModal } from '@/components/ImportModal';
 import { FolderModal } from '@/components/FolderModal';
+import { ExportModal } from '@/components/ExportModal';
 import type { Bookmark, BookmarkSource, Session } from '@/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -51,7 +52,11 @@ interface MainPageProps {
 export function MainPage({ session, onLogout }: MainPageProps) {
   // ── Modal visibility state ─────────────────────────────────────────────────
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const [folderModalOpen, setFolderModalOpen] = useState(false);
+
+  // The bookmark whose embed preview is currently open. Null = no preview.
+  const [previewBookmark, setPreviewBookmark] = useState<Bookmark | null>(null);
 
   // ── Infinite scroll: how many items are currently rendered ─────────────────
   const isMobile     = window.innerWidth < 600;
@@ -191,6 +196,7 @@ export function MainPage({ session, onLogout }: MainPageProps) {
         session={session}
         onLogout={onLogout}
         onImportClick={() => setImportModalOpen(true)}
+        onExportClick={() => setExportModalOpen(true)}
         onManageFolders={() => setFolderModalOpen(true)}
       />
 
@@ -268,6 +274,7 @@ export function MainPage({ session, onLogout }: MainPageProps) {
                 showPreview={settings.showPreviews}
                 onMoveToFolder={handleMoveToFolder}
                 onDelete={handleDeleteBookmark}
+                onPreviewClick={setPreviewBookmark}
               />
             ))}
           </Masonry>
@@ -304,11 +311,22 @@ export function MainPage({ session, onLogout }: MainPageProps) {
         onImported={() => setImportModalOpen(false)}
       />
 
+      <ExportModal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        folders={allFolders ?? []}
+      />
+
       <FolderModal
         open={folderModalOpen}
         onClose={() => setFolderModalOpen(false)}
         folders={allFolders ?? []}
         onChanged={() => {}}
+      />
+
+      <BookmarkEmbedModal
+        bookmark={previewBookmark}
+        onClose={() => setPreviewBookmark(null)}
       />
     </>
   );

@@ -7,20 +7,20 @@
 //
 // Desktop layout (two rows):
 //   Row 1: [🐦 PigeonSocial]
-//   Row 2: [Import ▾]  [Manage Folders]  ←── flex-grow ──→  [Hi, username] [Settings] [Sign out]
+//   Row 2: [Import ▾]  [Export]  [Manage Folders]  ←── flex-grow ──→  [Hi, username] [Settings] [Sign out]
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, Avatar, Space, Drawer } from 'antd';
+import { Button, Space, Drawer } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   ImportOutlined,
+  ExportOutlined,
   FolderOpenOutlined,
   SettingOutlined,
   LogoutOutlined,
   MenuOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import type { Session } from '@/types';
 
@@ -28,6 +28,7 @@ interface AppHeaderProps {
   session:          Session;
   onLogout:         () => void;
   onImportClick:    () => void;
+  onExportClick:    () => void;
   onManageFolders:  () => void;
 }
 
@@ -35,6 +36,7 @@ export function AppHeader({
   session,
   onLogout,
   onImportClick,
+  onExportClick,
   onManageFolders,
 }: AppHeaderProps) {
   const navigate = useNavigate();
@@ -47,6 +49,12 @@ export function AppHeader({
       icon:    <ImportOutlined />,
       label:   'Import bookmarks',
       onClick: () => { setMobileDrawerOpen(false); onImportClick(); },
+    },
+    {
+      key:     'export',
+      icon:    <ExportOutlined />,
+      label:   'Export / backup',
+      onClick: () => { setMobileDrawerOpen(false); onExportClick(); },
     },
     {
       key:     'folders',
@@ -152,6 +160,15 @@ export function AppHeader({
           style={{ borderRadius: 20, borderColor: 'rgba(255,255,255,0.4)', color: '#fff' }}
         >
           Import
+        </Button>
+
+        <Button
+          type="text"
+          icon={<ExportOutlined />}
+          onClick={onExportClick}
+          style={{ color: 'rgba(255,255,255,0.8)' }}
+        >
+          Export
         </Button>
 
         <Button

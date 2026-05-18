@@ -24,14 +24,16 @@ const INSTAGRAM_MEDIA_TYPE_LABEL: Record<number, string> = {
 /**
  * Picks the best (highest-resolution) thumbnail from image_versions2.
  * Instagram provides multiple sizes; we take the first candidate which tends
- * to be the largest.
+ * to be the largest. For carousel posts the top-level image_versions2 is
+ * often absent, so we fall back to the first slide's images.
  */
 function extractInstagramThumbnail(media: RawInstagramMedia): string | null {
-  const imageCandidates = media.image_versions2?.candidates;
-  if (!imageCandidates || imageCandidates.length === 0) return null;
-
   // The candidates array is sorted largest → smallest; first entry is best
-  return imageCandidates[0].url ?? null;
+  const topLevel = media.image_versions2?.candidates?.[0]?.url;
+  if (topLevel) return topLevel;
+
+  const firstCarouselImage = media.carousel_media?.[0]?.image_versions2?.candidates?.[0]?.url;
+  return firstCarouselImage ?? null;
 }
 
 /**
@@ -61,11 +63,12 @@ function mapSingleInstagramMedia(media: RawInstagramMedia): Bookmark {
   return {
     id:              uuidv4(),
     source:          'instagram',
+    mediaType:       media.media_type === 2 ? 'video' : 'image',
     title:           extractInstagramTitle(media),
     url:             buildInstagramPostUrl(media.code),
     thumbnailUrl:    extractInstagramThumbnail(media),
     authorName:      media.user?.username ? `@${media.user.username}` : '@instagram',
-    authorAvatarUrl: null,   // not included in saved posts API response
+    authorAvatarUrl: null,   // not in the saved-posts API; ImportModal patches this post-map via fetchInstagramAvatars
     dateAdded:       new Date().toISOString(),  // IG export doesn't include save date
     folderId:        null,
     tags:            [],

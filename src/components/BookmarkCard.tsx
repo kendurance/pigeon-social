@@ -17,21 +17,14 @@
 import { useState } from 'react';
 import { Card, Tooltip, Dropdown, Tag } from 'antd';
 import type { MenuProps } from 'antd';
-import { EllipsisOutlined, FolderAddOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, FolderAddOutlined, DeleteOutlined, LinkOutlined, PlayCircleFilled } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import type { Bookmark, Folder } from '@/types';
+import type { Bookmark, BookmarkMediaType, Folder } from '@/types';
 import { SourceIcon } from './SourceIcon';
 
 dayjs.extend(relativeTime);
 
-// ── Source display labels ─────────────────────────────────────────────────────
-
-const SOURCE_LABELS: Record<Bookmark['source'], string> = {
-  twitter:   'Twitter / X',
-  instagram: 'Instagram',
-  youtube:   'YouTube',
-};
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -45,6 +38,9 @@ interface BookmarkCardProps {
   onMoveToFolder: (bookmarkId: string, folderId: string | null) => void;
   /** Called when the user deletes the bookmark. */
   onDelete: (bookmarkId: string) => void;
+  /** Called when the user clicks the thumbnail/placeholder, asking the
+   *  parent to open the embed preview modal for this bookmark. */
+  onPreviewClick?: (bookmark: Bookmark) => void;
 }
 
 export function BookmarkCard({
@@ -53,14 +49,40 @@ export function BookmarkCard({
   showPreview,
   onMoveToFolder,
   onDelete,
+  onPreviewClick,
 }: BookmarkCardProps) {
-  /** Controls whether the thumbnail failed to load (shows fallback instead). */
-  const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
+  /** Index into `thumbnailUrlChain` for which URL is currently being tried.
+   *  Incremented each time the <img> fires onError. When it exceeds the chain
+   *  length, we give up and show the placeholder. */
+  const [attemptIndex, setAttemptIndex] = useState(0);
+
+  // Default for legacy bookmarks imported before mediaType existed.
+  const effectiveMediaType: BookmarkMediaType = bookmark.mediaType ?? 'image';
+  const isTextOnly = effectiveMediaType === 'text';
+  const isVideo    = effectiveMediaType === 'video';
+
+  // Reject obviously-broken URLs up front: empty strings and data: URIs (which
+  // can sneak in as lazy-load placeholders) succeed in <img> without firing
+  // onError, leaving a broken-icon glyph in the layout.
+  const thumbnailUrlChain = buildThumbnailUrlChain(bookmark);
+
+  const currentThumbnailUrl: string | null = thumbnailUrlChain[attemptIndex] ?? null;
+  const allAttemptsFailed = attemptIndex >= thumbnailUrlChain.length;
 
   const shouldShowThumbnail =
     showPreview &&
-    bookmark.thumbnailUrl !== null &&
-    !thumbnailLoadFailed;
+    !isTextOnly &&
+    currentThumbnailUrl !== null;
+
+  // Show the grey source-icon placeholder when:
+  //  - mediaType is 'text' (no image was ever expected)
+  //  - or every URL in the chain has failed to load (expired IG token, etc.)
+  // Legacy bookmarks (mediaType defaulted to 'image') with no usable URL still
+  // collapse to text-only — preserving their previous render.
+  const shouldShowPlaceholder =
+    showPreview &&
+    !shouldShowThumbnail &&
+    (isTextOnly || (thumbnailUrlChain.length > 0 && allAttemptsFailed));
 
   // Build the folder submenu items for the "Move to folder" option
   const folderMenuItems: MenuProps['items'] = [
@@ -143,18 +165,26 @@ export function BookmarkCard({
       {/* ── Thumbnail area ─────────────────────────────────────────────────── */}
       {shouldShowThumbnail && (
         <div
+          onClick={() => onPreviewClick?.(bookmark)}
           style={{
             position:        'relative',
             width:           '100%',
             paddingTop:      '56.25%',  // 16:9 aspect ratio box
             backgroundColor: '#f0f0f0',
             overflow:        'hidden',
+            cursor:          onPreviewClick ? 'pointer' : 'default',
+            // `manipulation` tells the browser to treat touch input here as a
+            // fast click only — no pan, no double-tap zoom. Prevents the
+            // "tap turns into drag and scrolls the page behind the modal"
+            // mobile glitch.
+            touchAction:     'manipulation',
           }}
         >
           <img
-            src={bookmark.thumbnailUrl!}
+            src={currentThumbnailUrl!}
             alt={bookmark.title}
-            onError={() => setThumbnailLoadFailed(true)}
+            referrerPolicy="no-referrer"
+            onError={() => setAttemptIndex((i) => i + 1)}
             style={{
               position:   'absolute',
               top:        0,
@@ -181,6 +211,43 @@ export function BookmarkCard({
           >
             <SourceIcon source={bookmark.source} size={14} />
           </div>
+
+          {isVideo && <VideoPlayOverlay />}
+        </div>
+      )}
+
+      {/* ── Placeholder (text-only post, or thumbnail URL that failed to load) ── */}
+      {shouldShowPlaceholder && (
+        <div
+          onClick={() => onPreviewClick?.(bookmark)}
+          style={{
+            position:        'relative',
+            width:           '100%',
+            paddingTop:      '56.25%',
+            backgroundColor: '#f5f5f5',
+            overflow:        'hidden',
+            cursor:          onPreviewClick ? 'pointer' : 'default',
+            // `manipulation` tells the browser to treat touch input here as a
+            // fast click only — no pan, no double-tap zoom. Prevents the
+            // "tap turns into drag and scrolls the page behind the modal"
+            // mobile glitch.
+            touchAction:     'manipulation',
+          }}
+        >
+          <div
+            style={{
+              position:       'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              opacity:        0.15,
+            }}
+          >
+            <SourceIcon source={bookmark.source} size={48} />
+          </div>
+
+          {isVideo && <VideoPlayOverlay />}
         </div>
       )}
 
@@ -209,8 +276,7 @@ export function BookmarkCard({
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
           {/* Source icon — flush left, vertically centred with title+date */}
           <div style={{ flexShrink: 0, marginTop: 2 }}>
-            {!shouldShowThumbnail && <SourceIcon source={bookmark.source} size={18} />}
-            {shouldShowThumbnail  && <SourceIcon source={bookmark.source} size={18} />}
+            <SourceIcon source={bookmark.source} size={18} />
           </div>
 
           {/* Title and date */}
@@ -252,5 +318,81 @@ export function BookmarkCard({
         </div>
       </div>
     </Card>
+  );
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Builds the ordered list of thumbnail URLs to try, in priority order.
+ *
+ * For Instagram, the chain is three tiers:
+ *   1. The direct CDN URL from `image_versions2.candidates[0]` — fast but its
+ *      signed token expires in ~5 days. Works for fresh imports.
+ *   2. `authorAvatarUrl` — the creator's profile picture, scraped from the
+ *      public profile page at import time (see fetchInstagramAvatars). Its
+ *      signed token lasts ~months, so it long outlives tier 1.
+ *   3. A generated initials avatar from `ui-avatars.com` with IG-pink (E1306C)
+ *      backdrop and the creator's first letters. Always renders (proper
+ *      image/png + CORS, year-long browser cache, no rate limit), giving each
+ *      card a per-creator distinct image even when the real thumbnail is gone.
+ *
+ * Earlier rounds tried `instagram.com/p/{code}/media/?size=l` and
+ * `unavatar.io/instagram/{username}` — both were blocked by Chrome's Opaque
+ * Response Blocking (the IG endpoint serves text/html for the 302; unavatar
+ * returns application/json + nosniff once its 25-req/hour free tier is
+ * exhausted). ui-avatars is purpose-built for `<img>` and avoids both pitfalls.
+ *
+ * For other sources, returns just the original thumbnailUrl (if usable).
+ */
+function buildThumbnailUrlChain(bookmark: Bookmark): string[] {
+  const isUsable = (u: string | null | undefined): u is string =>
+    typeof u === 'string' && u.trim() !== '' && !u.startsWith('data:');
+
+  const chain: string[] = [];
+  if (isUsable(bookmark.thumbnailUrl)) chain.push(bookmark.thumbnailUrl);
+
+  if (bookmark.source === 'instagram') {
+    if (isUsable(bookmark.authorAvatarUrl)) chain.push(bookmark.authorAvatarUrl);
+
+    // Skip the literal "@instagram" mapper fallback — every card would share
+    // the same generated initials, which defeats the per-creator distinction.
+    const username = bookmark.authorName.startsWith('@')
+      ? bookmark.authorName.slice(1)
+      : bookmark.authorName;
+    if (username && username !== 'instagram') {
+      const params = new URLSearchParams({
+        name:       username,
+        size:       '480',
+        background: 'E1306C',   // Instagram brand pink
+        color:      'fff',
+        bold:       'true',
+        format:     'png',
+      });
+      chain.push(`https://ui-avatars.com/api/?${params.toString()}`);
+    }
+  }
+
+  return chain;
+}
+
+/**
+ * Centered play-icon overlay drawn on top of the thumbnail/placeholder block
+ * for video posts. Pointer-events: none so it never intercepts card clicks.
+ */
+function VideoPlayOverlay() {
+  return (
+    <div
+      style={{
+        position:       'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        pointerEvents:  'none',
+      }}
+    >
+      <PlayCircleFilled style={{ fontSize: 56, color: 'rgba(255,255,255,0.92)', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.45))' }} />
+    </div>
   );
 }

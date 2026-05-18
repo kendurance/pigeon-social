@@ -10,6 +10,13 @@
 /** The social media platforms PigeonSocial currently supports. */
 export type BookmarkSource = 'twitter' | 'instagram' | 'youtube';
 
+/**
+ * What kind of content this card represents — drives card chrome.
+ * 'video' adds a play-icon overlay; 'text' forces the grey placeholder
+ * even when thumbnailUrl is null; 'image' is the default render path.
+ */
+export type BookmarkMediaType = 'image' | 'video' | 'text';
+
 // ── Core domain models ────────────────────────────────────────────────────────
 
 /**
@@ -22,6 +29,13 @@ export interface Bookmark {
 
   /** Which platform this came from. */
   source: BookmarkSource;
+
+  /**
+   * What kind of content this is. Drives card chrome (play-icon for 'video',
+   * grey placeholder for 'text'). Defaults to 'image' for legacy backups
+   * imported before this field existed.
+   */
+  mediaType: BookmarkMediaType;
 
   /** Display title — tweet text, caption text, or video title. */
   title: string;
@@ -180,6 +194,15 @@ export interface RawInstagramMedia {
   image_versions2?: {
     candidates: { url: string; width: number; height: number }[];
   };
+  /**
+   * Present on carousel posts (media_type=8). Each slide has its own
+   * image_versions2; the top-level image_versions2 is often absent for these.
+   */
+  carousel_media?: {
+    image_versions2?: {
+      candidates: { url: string; width: number; height: number }[];
+    };
+  }[];
   user?: {
     username: string;
     pk: string;
@@ -205,6 +228,24 @@ export interface RawYoutubeItem {
   thumbnail: string;    // CDN URL
   views: string;        // "157K views"
   age: string;          // "8 months ago"
+}
+
+// ── PigeonSocial backup / restore format ─────────────────────────────────────
+
+/**
+ * The schema for backup files produced by PigeonSocial itself.
+ * Distinct from raw social-media export files — this is the only format
+ * PigeonSocial writes. Keyed on `version` + `exportedAt` for auto-detection.
+ */
+export interface PigeonExport {
+  /** Schema version (currently 1) for forward-compatibility. */
+  version: number;
+  /** ISO 8601 timestamp of when this file was created. */
+  exportedAt: string;
+  /** Folder records included in this backup. */
+  folders: Folder[];
+  /** Bookmark records included in this backup. */
+  bookmarks: Bookmark[];
 }
 
 // ── Filter state ──────────────────────────────────────────────────────────────

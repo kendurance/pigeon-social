@@ -14,54 +14,49 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Bookmark, RawYoutubeExport, RawYoutubeItem } from '@/types';
 
 /**
- * Converts a YouTube "age" string like "8 months ago" into an approximate
- * ISO 8601 date by subtracting from the current time.
- *
- * The YouTube export doesn't provide an actual timestamp — just a relative
- * string — so we do a best-effort approximation.
+ * Extracts the 11-character video ID from any common YouTube URL form:
+ *   https://www.youtube.com/watch?v={ID}
+ *   https://youtu.be/{ID}
+ *   https://www.youtube.com/shorts/{ID}
+ *   https://www.youtube.com/embed/{ID}
+ * Returns null if no ID can be recovered.
  */
-function approximateDateFromYoutubeAge(ageString: string): string {
-  const now = new Date();
+function extractYoutubeVideoId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+  );
+  return match ? match[1] : null;
+}
 
-  // Match patterns like "3 days ago", "2 months ago", "1 year ago"
-  const ageMatch = ageString.match(/(\d+)\s+(second|minute|hour|day|week|month|year)s?\s+ago/i);
-
-  if (!ageMatch) {
-    // If we can't parse it (e.g. "Streamed live on..."), just use now
-    return now.toISOString();
-  }
-
-  const [, amountStr, unit] = ageMatch;
-  const amount = parseInt(amountStr, 10);
-
-  // Subtract the appropriate duration from now
-  const msMultiplierByUnit: Record<string, number> = {
-    second: 1_000,
-    minute: 60_000,
-    hour:   3_600_000,
-    day:    86_400_000,
-    week:   604_800_000,
-    month:  2_592_000_000,   // ~30 days
-    year:   31_536_000_000,  // ~365 days
-  };
-
-  const msToSubtract = (msMultiplierByUnit[unit.toLowerCase()] ?? 0) * amount;
-  return new Date(now.getTime() - msToSubtract).toISOString();
+/**
+ * Builds the canonical YouTube thumbnail URL. hqdefault.jpg is generated for
+ * every public video — unlike maxresdefault, which only exists for HD uploads.
+ */
+function buildYoutubeThumbnailUrl(videoId: string): string {
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 }
 
 /**
  * Converts a single YouTube playlist item into a unified Bookmark.
+ * The extension-captured `item.thumbnail` is unreliable (lazy-loaded videos
+ * yield base64 placeholders), so we derive the canonical URL from the video
+ * ID and only fall back to the captured value if the URL is unparseable.
  */
 function mapSingleYoutubeItem(item: RawYoutubeItem): Bookmark {
+  const videoId          = extractYoutubeVideoId(item.url ?? '');
+  const derivedThumbnail = videoId ? buildYoutubeThumbnailUrl(videoId) : null;
+
   return {
     id:              uuidv4(),
     source:          'youtube',
+    mediaType:       'video',
     title:           item.title         ?? '(untitled video)',
     url:             item.url           ?? '',
-    thumbnailUrl:    item.thumbnail     ?? null,
+    thumbnailUrl:    derivedThumbnail ?? item.thumbnail ?? null,
     authorName:      item.channel       ?? 'Unknown Channel',
     authorAvatarUrl: null,   // not included in playlist exports
-    dateAdded:       approximateDateFromYoutubeAge(item.age ?? ''),
+    dateAdded:       new Date().toISOString(),
     folderId:        null,
     tags:            [],
     rawData:         item,

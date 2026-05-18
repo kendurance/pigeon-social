@@ -242,7 +242,7 @@ App
 │   │
 │   ├── Masonry Grid
 │   │   └── BookmarkCard (× N)
-│   │       ├── Thumbnail (conditional on settings.showPreviews)
+│   │       ├── Thumbnail (conditional on settings.showPreviews) → click opens BookmarkEmbedModal
 │   │       ├── Source badge (overlaid on thumbnail)
 │   │       ├── Folder tag
 │   │       ├── Context menu (Open, Move to folder, Delete)
@@ -252,7 +252,12 @@ App
 │   │
 │   ├── Infinite scroll sentinel (IntersectionObserver)
 │   ├── ImportModal
-│   └── FolderModal
+│   ├── ExportModal
+│   ├── FolderModal
+│   └── BookmarkEmbedModal (click-through inline preview)
+│       ├── Instagram → iframe to /p/{code}/embed/captioned
+│       ├── YouTube   → iframe to /embed/{id} (16:9)
+│       └── Twitter   → widgets.js-rendered blockquote
 │
 └── SettingsPage
 ├── Source visibility toggles
@@ -279,23 +284,23 @@ App
 
 ---
 
-### Phase 2a — Backup & Restore (Priority)
+### Phase 2a — Backup & Restore ✅ Complete
 
 The export format uses the `PigeonExport` schema defined in section 6. It is
 distinct from raw social media export files and is the only file format
 PigeonSocial itself produces.
 
-- [ ] **Export selected folders** — user selects one or more folders from a
+- [x] **Export selected folders** — user selects one or more folders from a
   modal; downloads a `pigeon-export-{date}.json` file containing the selected
   `Folder` records and all `Bookmark` records whose `folderId` matches
-- [ ] **Export all** — convenience option to export every folder and every
+- [x] **Export all** — convenience option to export every folder and every
   bookmark (including uncategorized) in one file
-- [ ] **Restore from export** — the ImportModal's auto-detection logic learns
+- [x] **Restore from export** — the ImportModal's auto-detection logic learns
   to recognize the `PigeonExport` schema (keyed on `version` + `exportedAt`
   fields) and re-imports folders and bookmarks, restoring `folderId`
   relationships; duplicate URLs are skipped by default with a count reported
   to the user
-- [ ] **Conflict handling** — if a folder with the same name already exists
+- [x] **Conflict handling** — if a folder with the same name already exists
   during restore, prompt the user to merge into the existing folder or create
   a new one with a disambiguated name
 
@@ -303,19 +308,28 @@ PigeonSocial itself produces.
 
 ### Phase 2b — Import Improvements
 
-- [ ] **Multi-file import** — allow selecting multiple JSON files in one
+- [ ] **Multi-file import** — allow selecting multiple JSON files in one; recognize differing sources within the same import
   session rather than repeating the import flow
-- [ ] **Duplicate detection** — skip bookmarks whose source URL already exists
-  in the database; report the skipped count to the user after import
+- [ ] **Duplicate detection** — update bookmarks whose source URL already exists
+  in the database (based on that source's ID); report the skipped count to the user after import
 - [ ] **Instagram pagination** — accept additional page captures and merge
   them into the existing Instagram bookmark set
 - [ ] **Import history** — log of previous import sessions showing source,
-  item count, and timestamp
+  item count, and timestamp; this will be on a different page, like system settings
 
 ---
 
 ### Phase 2c — Bookmark Enhancements
 
+- [x] **Click-through embed preview modal** — clicking a card's thumbnail or
+  placeholder opens [BookmarkEmbedModal](../src/components/BookmarkEmbedModal.tsx),
+  which renders the original post inline using each source's own embed:
+  Instagram (`/p/{code}/embed/captioned` iframe), YouTube (`/embed/{id}`
+  iframe in a 16:9 container), Twitter (`platform.twitter.com/widgets.js`
+  blockquote render). Title and ⋯ menu are unchanged. URL parsing helpers
+  live in [extractEmbedIds.ts](../src/utils/extractEmbedIds.ts); Twitter's
+  widgets.js is lazy-loaded once on first use. No proxy needed — these are
+  all CORS-friendly cross-origin embeds
 - [ ] **Tags UI** — chip input on each card to add/remove tags; the `tags`
   field already exists in the data model and DB schema
 - [ ] **Tag filter** — add tag filtering to the filter panel alongside source
@@ -391,6 +405,14 @@ local full-stack app, at which point:
 - IndexedDB is replaced by SQLite (via Prisma or better-sqlite3)
 - The auth system is upgraded (bcrypt password hashing)
 - The Generic URL source from Phase 3 becomes straightforward
+- **Instagram HD avatars become reachable.** The browser-only pipeline is
+  stuck on the 100×100 og:image because `/api/v1/users/web_profile_info/`
+  hard-throttles to ~1 successful call per IP per several minutes for
+  unauthenticated callers (see §10 "Instagram avatars are 100×100"). A
+  backend can hold a persistent IG session (csrftoken, mid, ig_did
+  cookies) and call `web_profile_info` at normal request rates,
+  unlocking the 320×320 `profile_pic_url_hd` for every creator. This is
+  the cleanest place to revisit the JSON-endpoint code we removed.
 
 ---
 
@@ -414,6 +436,7 @@ Optional cloud sync once a backend exists from Phase 4:
 | YouTube `age` field is approximate | "8 months ago" is converted to an estimated timestamp; exact publish dates are not available from the playlist export format |
 | No duplicate prevention | Importing the same file twice creates duplicate records. Deduplication by source URL is a Phase 2b item |
 | Instagram CDN URLs expire | Instagram image URLs contain signed tokens that expire; thumbnails on older bookmarks may break |
+| Instagram avatars are 100×100 (pixelated) | The saved-posts API doesn't include a profile_pic_url, so `fetchInstagramAvatars.ts` scrapes `<meta og:image>` from each public profile page through the Vite dev proxy. That tag only carries the 100×100 thumbnail variant. The proper HD source (`/api/v1/users/web_profile_info/?username=X`, which returns `profile_pic_url_hd` at 320×320) was implemented but ripped out — IG hard-rate-limits it per-IP to ~1 successful call per several minutes regardless of headers (verified across six combinations of App ID, X-ASBD-ID, X-IG-WWW-Claim, browser UA, etc.). In a 20-user import we got 1 HD avatar and 19 fallbacks — too inconsistent to ship. **Resolved properly only in Phase 4**, where a real backend can hold persistent IG session cookies and avoid the unauthenticated throttle. |
 | Tags stored but not surfaced | The `tags` field exists in the data model and DB schema; the UI is deferred to Phase 2c |
 | Dark mode toggle is wired but incomplete | The settings value persists correctly; the AntD `darkAlgorithm` swap is not yet applied |
 | No export / backup | Organized data exists only in the browser's IndexedDB; a browser data clear destroys it. Addressed in Phase 2a |

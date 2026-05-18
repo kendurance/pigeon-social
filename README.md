@@ -111,12 +111,17 @@ pigeon-social/
 │   │   ├── youtubeMapper.ts    ← Converts YouTube export → Bookmark[]
 │   │   └── index.ts            ← Auto-detect source + dispatch to correct mapper
 │   ├── components/
-│   │   ├── AppHeader.tsx       ← Top navigation bar (mobile + desktop layouts)
-│   │   ├── BookmarkCard.tsx    ← The reusable card component for any bookmark
-│   │   ├── FilterPanel.tsx     ← Collapsible filter card (source/folder/search)
-│   │   ├── FolderModal.tsx     ← Create and delete folders
-│   │   ├── ImportModal.tsx     ← File upload + auto-detect + import to DB
-│   │   └── SourceIcon.tsx      ← Inline SVG icons for Twitter, Instagram, YouTube
+│   │   ├── AppHeader.tsx          ← Top navigation bar (mobile + desktop layouts)
+│   │   ├── BookmarkCard.tsx       ← The reusable card component for any bookmark
+│   │   ├── BookmarkEmbedModal.tsx ← Click-through preview modal (IG/YT iframes, Twitter widgets.js)
+│   │   ├── ExportModal.tsx        ← Per-folder backup export (PigeonExport JSON)
+│   │   ├── FilterPanel.tsx        ← Collapsible filter card (source/folder/search)
+│   │   ├── FolderModal.tsx        ← Create and delete folders
+│   │   ├── ImportModal.tsx        ← File upload + auto-detect + import / restore from backup
+│   │   └── SourceIcon.tsx         ← Inline SVG icons for Twitter, Instagram, YouTube
+│   ├── utils/
+│   │   ├── extractEmbedIds.ts        ← URL parsers for IG post code + YT video id (used by embed modal)
+│   │   └── fetchInstagramAvatars.ts  ← Scrapes IG profile `og:image` through the Vite proxy at import time
 │   ├── pages/
 │   │   ├── LoginPage.tsx       ← Login / create account screen
 │   │   ├── MainPage.tsx        ← The bookmark feed (masonry grid + infinite scroll)
@@ -216,6 +221,20 @@ Each source's JSON export has a completely different shape. The mapper layer iso
 
 Everything else in the app works with the clean `Bookmark` type. If Instagram changes their API shape tomorrow, only `instagramMapper.ts` needs to change.
 
+### Click-through preview modal
+
+Clicking a card's thumbnail opens `BookmarkEmbedModal`, which renders the original post inline using each source's official embed:
+
+- **Instagram** → iframe to `/p/{code}/embed/captioned` (post code parsed by `extractInstagramPostCode` in `utils/extractEmbedIds.ts`)
+- **YouTube** → iframe to `/embed/{id}` in a 16:9 container (`extractYoutubeVideoId` handles `watch?v=`, `youtu.be`, `shorts`, `embed`)
+- **Twitter** → lazy-loads `platform.twitter.com/widgets.js` once per page lifetime, then renders a `<blockquote class="twitter-tweet">`
+
+All three are CORS-friendly cross-origin embeds — no Vite proxy involved. If URL parsing fails (deleted post, weird share link), the modal falls back to a centered "Open original" button. Title and ⋯ menu on the card are unchanged; the click target is just the thumbnail/placeholder area.
+
+### Instagram avatar enrichment (and its 100×100 ceiling)
+
+IG's saved-posts API response has no profile-pic field, so at import time `utils/fetchInstagramAvatars.ts` scrapes each creator's public profile page through a dev-only Vite proxy (`/ig-public-profile/{username}/` → `instagram.com/{username}/`) and parses `<meta og:image>`. That tag only carries the 100×100 thumbnail. The proper HD source (`/api/v1/users/web_profile_info/`) hard-rate-limits unauthenticated callers to ~1 successful call per IP per several minutes regardless of headers, so the JSON path was tried, instrumented, and ripped out. A real backend with persistent IG session cookies (Phase 4) is the only practical fix — see `.github/copilot-instructions.md` §10.
+
 ---
 
 ## Tech Stack Decisions
@@ -242,7 +261,8 @@ Once you're comfortable with the basics, some good next steps:
 - **Drag-and-drop to folders**: Drag a card onto a folder in the sidebar to move it
 - **Bulk actions**: Checkbox-select multiple cards → move/delete all at once
 - **Tags**: Add freeform tags to bookmarks (the `tags: string[]` field is already there in the type)
-- **Export**: Add a button to export your organised bookmarks back to JSON
 - **Multiple pages of Instagram**: The IG export only returns one page (21 items). Add a "Load more" button that accepts the next page's JSON
 - **Dark mode**: The settings toggle is wired up; implement the actual theme switch using AntD's `ConfigProvider` `algorithm` prop
-- **Browser extension companion**: A small Manifest V3 extension that adds a "Save to PigeonSocial" button on Twitter/IG/YouTube, POSTing to a local Express server
+- **Browser extension companion**: A small Manifest V3 extension that adds a "Save to PigeonSocial" button on Twitter/IG/YouTube, POSTing to a local Express server. This is also the unlock for full-resolution Instagram avatars — see `.github/copilot-instructions.md` §10 for why a backend session is the only practical fix for the 100×100 ceiling.
+
+> For the full, prioritised roadmap (Phases 2a–5) and known limitations, see [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
