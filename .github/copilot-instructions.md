@@ -391,6 +391,14 @@ local full-stack app, at which point:
 - IndexedDB is replaced by SQLite (via Prisma or better-sqlite3)
 - The auth system is upgraded (bcrypt password hashing)
 - The Generic URL source from Phase 3 becomes straightforward
+- **Instagram HD avatars become reachable.** The browser-only pipeline is
+  stuck on the 100×100 og:image because `/api/v1/users/web_profile_info/`
+  hard-throttles to ~1 successful call per IP per several minutes for
+  unauthenticated callers (see §10 "Instagram avatars are 100×100"). A
+  backend can hold a persistent IG session (csrftoken, mid, ig_did
+  cookies) and call `web_profile_info` at normal request rates,
+  unlocking the 320×320 `profile_pic_url_hd` for every creator. This is
+  the cleanest place to revisit the JSON-endpoint code we removed.
 
 ---
 
@@ -414,6 +422,7 @@ Optional cloud sync once a backend exists from Phase 4:
 | YouTube `age` field is approximate | "8 months ago" is converted to an estimated timestamp; exact publish dates are not available from the playlist export format |
 | No duplicate prevention | Importing the same file twice creates duplicate records. Deduplication by source URL is a Phase 2b item |
 | Instagram CDN URLs expire | Instagram image URLs contain signed tokens that expire; thumbnails on older bookmarks may break |
+| Instagram avatars are 100×100 (pixelated) | The saved-posts API doesn't include a profile_pic_url, so `fetchInstagramAvatars.ts` scrapes `<meta og:image>` from each public profile page through the Vite dev proxy. That tag only carries the 100×100 thumbnail variant. The proper HD source (`/api/v1/users/web_profile_info/?username=X`, which returns `profile_pic_url_hd` at 320×320) was implemented but ripped out — IG hard-rate-limits it per-IP to ~1 successful call per several minutes regardless of headers (verified across six combinations of App ID, X-ASBD-ID, X-IG-WWW-Claim, browser UA, etc.). In a 20-user import we got 1 HD avatar and 19 fallbacks — too inconsistent to ship. **Resolved properly only in Phase 4**, where a real backend can hold persistent IG session cookies and avoid the unauthenticated throttle. |
 | Tags stored but not surfaced | The `tags` field exists in the data model and DB schema; the UI is deferred to Phase 2c |
 | Dark mode toggle is wired but incomplete | The settings value persists correctly; the AntD `darkAlgorithm` swap is not yet applied |
 | No export / backup | Organized data exists only in the browser's IndexedDB; a browser data clear destroys it. Addressed in Phase 2a |
