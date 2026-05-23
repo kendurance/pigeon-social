@@ -7,18 +7,20 @@
 //   IndexedDB is async, supports structured data, and can hold hundreds of MB.
 //   Dexie makes IndexedDB feel like a simple typed key-value store.
 //
-// The database has two tables:
-//   • bookmarks  – the imported & normalised bookmark records
-//   • folders    – user-created organisational folders
+// Tables:
+//   • bookmarks      – the imported & normalised bookmark records
+//   • folders        – user-created organisational folders
+//   • importSessions – one row per file imported (Phase 2b history log)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Dexie, { type EntityTable } from 'dexie';
-import type { Bookmark, Folder } from '@/types';
+import type { Bookmark, Folder, ImportSession } from '@/types';
 
 /** The shape of our IndexedDB database. Dexie uses this for type inference. */
 interface PigeonDatabase extends Dexie {
-  bookmarks: EntityTable<Bookmark, 'id'>;
-  folders:   EntityTable<Folder,   'id'>;
+  bookmarks:      EntityTable<Bookmark,      'id'>;
+  folders:        EntityTable<Folder,        'id'>;
+  importSessions: EntityTable<ImportSession, 'id'>;
 }
 
 /**
@@ -27,14 +29,25 @@ interface PigeonDatabase extends Dexie {
  */
 const db = new Dexie('PigeonSocialDB') as PigeonDatabase;
 
-// Schema version 1.
-// The string value lists which fields are **indexed** (searchable/sortable).
-// Fields not listed here are still stored — they just can't be queried by index.
+// Schema version 1 (original).
+// Kept here so Dexie can run upgrades for existing users.
 db.version(1).stores({
-  // '++id' = auto-incrementing primary key (we use uuid instead, so just 'id')
-  // '&id' = unique index  |  'source, folderId, dateAdded' = regular indexes
   bookmarks: '&id, source, folderId, dateAdded',
   folders:   '&id, name, createdAt',
+});
+
+// Schema version 2 (Phase 2b).
+// Changes:
+//   • Adds `url` index on bookmarks — used for O(N) dedup lookups via .anyOf()
+//     Non-unique (&url would fail for any DBs that already have duplicate URLs
+//     from pre-2b re-imports; uniqueness is enforced at write time instead).
+//   • Adds importSessions table for the import history page.
+// No .upgrade() callback needed — Dexie 4 auto-populates new indexes from
+// existing rows and new tables start empty.
+db.version(2).stores({
+  bookmarks:      '&id, source, folderId, dateAdded, url',
+  folders:        '&id, name, createdAt',
+  importSessions: '&id, importedAt, sessionGroupId',
 });
 
 export default db;

@@ -248,6 +248,41 @@ export interface PigeonExport {
   bookmarks: Bookmark[];
 }
 
+// ── Import history ────────────────────────────────────────────────────────────
+
+/** Terminal status of a single-file import attempt. */
+export type ImportStatus = 'success' | 'partial' | 'failed';
+
+/**
+ * One row in the import history log — one record per file imported.
+ * Written to the `importSessions` Dexie table at the end of each file's
+ * processing (success or failure).
+ */
+export interface ImportSession {
+  /** uuid v4 */
+  id: string;
+  /** ISO 8601 — used as the primary sort key on the history page. */
+  importedAt: string;
+  /** The original filename from the File object. */
+  fileName: string;
+  /** What detectAndMap returned for this file. */
+  detectedSource: 'twitter' | 'instagram' | 'youtube' | 'pigeon-export' | 'unknown';
+  /** New bookmark records inserted. */
+  addedCount: number;
+  /** Existing bookmarks whose metadata was refreshed via URL match. */
+  updatedCount: number;
+  /** Reserved — always 0 now that both paths use update-on-duplicate. */
+  skippedCount: number;
+  status: ImportStatus;
+  /** Populated when status is 'failed' or 'partial'. */
+  errorMessage: string | null;
+  /**
+   * Groups files dropped together in one "Import all" session.
+   * All files in a single batch share the same sessionGroupId.
+   */
+  sessionGroupId: string;
+}
+
 // ── Filter state ──────────────────────────────────────────────────────────────
 
 /**
