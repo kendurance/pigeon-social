@@ -1,4 +1,4 @@
-# PigeonSocial — Copilot Instructions & Project Plan
+<!-- # PigeonSocial — Copilot Instructions & Project Plan
 
 **Project codename:** PigeonSocial  
 **Tagline:** Pigeonhole Your Bookmarks!  
@@ -476,4 +476,4 @@ environment variables or configuration files are required.
 - Bookmarks + folders: DevTools → Application → IndexedDB → delete
   `PigeonSocialDB`
 - Auth + settings: DevTools → Application → Local Storage → delete all keys
-  prefixed with `pigeon_`
+  prefixed with `pigeon_` -->
