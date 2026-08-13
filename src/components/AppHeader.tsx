@@ -18,6 +18,7 @@ import {
   ImportOutlined,
   ExportOutlined,
   FolderOpenOutlined,
+  HistoryOutlined,
   SettingOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -61,6 +62,12 @@ export function AppHeader({
       icon:    <FolderOpenOutlined />,
       label:   'Manage folders',
       onClick: () => { setMobileDrawerOpen(false); onManageFolders(); },
+    },
+    {
+      key:     'history',
+      icon:    <HistoryOutlined />,
+      label:   'Import history',
+      onClick: () => { setMobileDrawerOpen(false); navigate('/import-history'); },
     },
     {
       key:     'settings',
@@ -178,6 +185,15 @@ export function AppHeader({
           style={{ color: 'rgba(255,255,255,0.8)' }}
         >
           Folders
+        </Button>
+
+        <Button
+          type="text"
+          icon={<HistoryOutlined />}
+          onClick={() => navigate('/import-history')}
+          style={{ color: 'rgba(255,255,255,0.8)' }}
+        >
+          History
         </Button>
 
         <div style={{ flex: 1 }} />

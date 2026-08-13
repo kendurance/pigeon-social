@@ -10,9 +10,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { useAuth } from '@/hooks/useAuth';
-import { LoginPage }    from '@/pages/LoginPage';
-import { MainPage }     from '@/pages/MainPage';
-import { SettingsPage } from '@/pages/SettingsPage';
+import { LoginPage }           from '@/pages/LoginPage';
+import { MainPage }            from '@/pages/MainPage';
+import { SettingsPage }        from '@/pages/SettingsPage';
+import { ImportHistoryPage }   from '@/pages/ImportHistoryPage';
 
 // ── Ant Design theme overrides ────────────────────────────────────────────────
 // We set the primary colour to PigeonSocial's navy blue so AntD components
@@ -50,6 +51,10 @@ export default function App() {
           <Route
             path="/settings"
             element={<SettingsPage />}
+          />
+          <Route
+            path="/import-history"
+            element={<ImportHistoryPage session={session} onLogout={logout} />}
           />
           {/* Redirect anything else back to the homepage */}
           <Route path="*" element={<Navigate to="/" replace />} />
