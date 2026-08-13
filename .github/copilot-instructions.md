@@ -306,15 +306,15 @@ PigeonSocial itself produces.
 
 ---
 
-### Phase 2b — Import Improvements
+### Phase 2b — Import Improvements ✅ Complete
 
-- [ ] **Multi-file import** — allow selecting multiple JSON files in one; recognize differing sources within the same import
+- [x] **Multi-file import** — allow selecting multiple JSON files in one; recognize differing sources within the same import
   session rather than repeating the import flow
-- [ ] **Duplicate detection** — update bookmarks whose source URL already exists
+- [x] **Duplicate detection** — update bookmarks whose source URL already exists
   in the database (based on that source's ID); report the skipped count to the user after import
-- [ ] **Instagram pagination** — accept additional page captures and merge
+- [x] **Instagram pagination** — accept additional page captures and merge
   them into the existing Instagram bookmark set
-- [ ] **Import history** — log of previous import sessions showing source,
+- [x] **Import history** — log of previous import sessions showing source,
   item count, and timestamp; this will be on a different page, like system settings
 
 ---
